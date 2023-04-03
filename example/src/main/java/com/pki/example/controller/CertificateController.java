@@ -26,6 +26,7 @@ public class CertificateController {
 
     @PostMapping("/create")
     public CertificateDto createCertificate(@Valid @RequestBody CreateCertificateDto createCertificateDto){
+        certificateService.createCertificate(createCertificateDto);
         return null;
     }
 }

@@ -31,7 +31,7 @@ public class CertificateExample {
         //UID (USER ID) je ID korisnika
         builder.addRDN(BCStyle.UID, "123456");
 
-        return new Subject(keyPairSubject.getPublic(), builder.build());
+        return new Subject(keyPairSubject.getPublic(), builder.build(), "1");
     }
 
     public Issuer generateIssuer() {
@@ -50,7 +50,7 @@ public class CertificateExample {
         //Kreiraju se podaci za issuer-a, sto u ovom slucaju ukljucuje:
         // - privatni kljuc koji ce se koristiti da potpise sertifikat koji se izdaje
         // - podatke o vlasniku sertifikata koji izdaje nov sertifikat
-        return new Issuer(kp.getPrivate(), kp.getPublic(), builder.build());
+        return new Issuer(kp.getPrivate(), "2", builder.build());
     }
 
     private KeyPair generateKeyPair() {

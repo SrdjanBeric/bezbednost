@@ -16,6 +16,7 @@ import java.security.PublicKey;
 @NoArgsConstructor
 public class Issuer {
     private PrivateKey privateKey;
-    private PublicKey publicKey;
+//    private PublicKey publicKey;
+    private String serialNumber;
     private X500Name x500Name;
 }
