@@ -26,6 +26,7 @@ public class CreateCertificateDto {
     private Date startDate;
     @JsonFormat(pattern="yyyy-MM-dd")
     private Date endDate;
+    // authoritySubject moze biti: root, ca, ee
     @NotNull(message = "Authority is mandatory")
     private String authoritySubject;
     @NotNull(message = "Issuer serial number is mandatory")

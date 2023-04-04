@@ -143,7 +143,10 @@ public class KeyStoreReader {
     }
 
     public List<X509Certificate> getAllCertificates(){
-        return readAllCertificate("src/main/resources/static/example.jks", "password");
+        List<X509Certificate> certificates = readAllCertificate("src/main/resources/static/root.jks", "password");
+        certificates.addAll(readAllCertificate("src/main/resources/static/ca.jks", "password"));
+        certificates.addAll(readAllCertificate("src/main/resources/static/ee.jks", "password"));
+        return certificates;
     }
 
     private List<X509Certificate> readAllCertificate(String keyStoreFile, String keyStorePass) {

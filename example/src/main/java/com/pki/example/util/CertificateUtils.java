@@ -39,7 +39,7 @@ public class CertificateUtils {
         String authority = "ca";
         try {
             if(isSelfSigned(certificate)) authority = "root";
-            else if(certificate.getBasicConstraints() == -1) authority = "endEntity";
+            else if(certificate.getBasicConstraints() == -1) authority = "end entity";
         } catch (CertificateException | InvalidKeyException | NoSuchAlgorithmException | NoSuchProviderException e) {
             StringMapMessage message = new StringMapMessage();
             message.put("msg", "Certificate exception: " + e.getMessage());

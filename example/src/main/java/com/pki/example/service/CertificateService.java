@@ -49,28 +49,60 @@ public class CertificateService {
         return certificateDtos;
     }
 
-    public CertificateDto createCertificate(CreateCertificateDto createCertificateDto){
-        switch(createCertificateDto.getAuthoritySubject()){
-            case "root":
-                break;
-            case "ca":
-                Issuer issuer = keyStoreReader.readIssuerFromStore("src/main/resources/static/example.jks", createCertificateDto.getIssuerSerialNumber(), "password".toCharArray(), "password".toCharArray());
-                PrivateKey privateKeyIssuer = keyStoreReader.readPrivateKey("src/main/resources/static/example.jks", "password", createCertificateDto.getIssuerSerialNumber(), "password");
-                Random rand = new Random();
-                String randomSerialNumber = (new BigInteger(32, rand)).toString();
-                KeyPair keyPair = generateKeyPair();
-                Subject subject = generateSubject(createCertificateDto, randomSerialNumber, keyPair.getPublic());
-//                Issuer issuer = generateIssuer(certificateUtils.X509CertificateToCertificateDto(issuerCertificate), createCertificateDto.getIssuerSerialNumber(), privateKeyIssuer);
-                X509Certificate newCertificate = CertificateGenerator.generateCertificate(subject, issuer, createCertificateDto.getStartDate(), createCertificateDto.getEndDate(), randomSerialNumber, true);
-                keyStoreWriter.loadKeyStore("src/main/resources/static/example.jks",  "password".toCharArray());
-                keyStoreWriter.write(randomSerialNumber, keyPair.getPrivate(), "password".toCharArray(), newCertificate);
-                keyStoreWriter.saveKeyStore("src/main/resources/static/example.jks",  "password".toCharArray());
-                break;
-            case "ee":
-                break;
+    public CertificateDto createCertificate(CreateCertificateDto createCertificateDto) {
+        if (createCertificateDto.getAuthoritySubject().equals("root")) {
+            KeyPair keyPair = generateKeyPair();
+            Random rand = new Random();
+            String newSubjectSerialNumber = (new BigInteger(32, rand)).toString();
+            Subject subject = generateSubject(createCertificateDto, newSubjectSerialNumber, keyPair.getPublic());
+            Issuer selfIssuer = generateIssuer(createCertificateDto, newSubjectSerialNumber, keyPair.getPrivate());
+            X509Certificate newCertificate = CertificateGenerator.generateCertificate(subject, selfIssuer, createCertificateDto.getStartDate(), createCertificateDto.getEndDate(), newSubjectSerialNumber, true);
+            keyStoreWriter.loadKeyStore("src/main/resources/static/root.jks", "password".toCharArray());
+            keyStoreWriter.write(newSubjectSerialNumber, keyPair.getPrivate(), "password".toCharArray(), newCertificate);
+            keyStoreWriter.saveKeyStore("src/main/resources/static/root.jks", "password".toCharArray());
+        }
+        else if (createCertificateDto.getAuthoritySubject().equals("ca")){
+            Issuer issuer = getIssuer(createCertificateDto);
+            if (issuer == null) return null;
+            Random rand = new Random();
+            String newSubjectSerialNumber = (new BigInteger(32, rand)).toString();
+            KeyPair keyPair = generateKeyPair();
+            Subject subject = generateSubject(createCertificateDto, newSubjectSerialNumber, keyPair.getPublic());
+            X509Certificate newCertificate = CertificateGenerator.generateCertificate(subject, issuer, createCertificateDto.getStartDate(), createCertificateDto.getEndDate(), newSubjectSerialNumber, true);
+            keyStoreWriter.loadKeyStore("src/main/resources/static/ca.jks", "password".toCharArray());
+            keyStoreWriter.write(newSubjectSerialNumber, keyPair.getPrivate(), "password".toCharArray(), newCertificate);
+            keyStoreWriter.saveKeyStore("src/main/resources/static/ca.jks", "password".toCharArray());
+        }else if (createCertificateDto.getAuthoritySubject().equals("ee")){
+            Issuer issuer = getIssuer(createCertificateDto);
+            if (issuer == null) return null;
+            Random rand = new Random();
+            String newSubjectSerialNumber = (new BigInteger(32, rand)).toString();
+            KeyPair keyPair = generateKeyPair();
+            Subject subject = generateSubject(createCertificateDto, newSubjectSerialNumber, keyPair.getPublic());
+            X509Certificate newCertificate = CertificateGenerator.generateCertificate(subject, issuer, createCertificateDto.getStartDate(), createCertificateDto.getEndDate(), newSubjectSerialNumber, false);
+            keyStoreWriter.loadKeyStore("src/main/resources/static/ee.jks", "password".toCharArray());
+            keyStoreWriter.write(newSubjectSerialNumber, keyPair.getPrivate(), "password".toCharArray(), newCertificate);
+            keyStoreWriter.saveKeyStore("src/main/resources/static/ee.jks", "password".toCharArray());
         }
 
         return null;
+    }
+
+    private Issuer getIssuer(CreateCertificateDto createCertificateDto) {
+        Issuer issuer = null;
+        try{
+            issuer = keyStoreReader.readIssuerFromStore("src/main/resources/static/ca.jks", createCertificateDto.getIssuerSerialNumber(), "password".toCharArray(), "password".toCharArray());
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        try{
+            if(issuer == null){
+                issuer = keyStoreReader.readIssuerFromStore("src/main/resources/static/root.jks", createCertificateDto.getIssuerSerialNumber(), "password".toCharArray(), "password".toCharArray());
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return issuer;
     }
 
     public Subject generateSubject(CreateCertificateDto certificateDTO, String serialNumber, PublicKey publicKey){
@@ -85,7 +117,7 @@ public class CertificateService {
         return new Subject(publicKey, x500NameBuilder.build(), serialNumber);
     }
 
-    public Issuer generateIssuer(CertificateDto certificateDTO, String serialNumber, PrivateKey privateKey){
+    public Issuer generateIssuer(CreateCertificateDto certificateDTO, String serialNumber, PrivateKey privateKey){
         X500NameBuilder x500NameBuilder = new X500NameBuilder(BCStyle.INSTANCE);
         x500NameBuilder.addRDN(BCStyle.CN, certificateDTO.getCommonNameSubject() != null ? certificateDTO.getCommonNameSubject() : "");
         x500NameBuilder.addRDN(BCStyle.NAME, certificateDTO.getNameSubject() != null ? certificateDTO.getNameSubject() : "");
