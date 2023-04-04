@@ -35,6 +35,7 @@ public class CertificateUtils {
         }
         X500Name subject = certHolder.getSubject();
         X500Name issuer = certHolder.getIssuer();
+        System.out.println(certificate.getBasicConstraints());
         String authority = "ca";
         try {
             if(isSelfSigned(certificate)) authority = "root";
@@ -141,8 +142,7 @@ public class CertificateUtils {
         return verifySignatures(cert, cert.getPublicKey());
     }
 
-    //    This code verifies if a digital signature on a certificate is valid by checking if
-    //    the provided public key matches the signature algorithm used to sign the certificate.
+//    This is a method that verifies if a certificate's signature is valid, by using the certificate's public key to verify the signature.
     private boolean verifySignatures(X509Certificate cert, PublicKey key) {
         String sigAlg = cert.getSigAlgName();
         String keyAlg = key.getAlgorithm();

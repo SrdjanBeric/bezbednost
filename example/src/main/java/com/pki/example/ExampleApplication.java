@@ -5,6 +5,7 @@ import com.pki.example.data.Issuer;
 import com.pki.example.dto.CertificateDto;
 import com.pki.example.keystores.KeyStoreReader;
 import com.pki.example.keystores.KeyStoreWriter;
+import com.pki.example.service.CertificateService;
 import com.pki.example.util.CertificateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationContextFactory;
@@ -31,9 +32,12 @@ public class ExampleApplication {
 
 	private static ApplicationContext context;
 
-	public static void main(String[] args) {
+	private static CertificateService certificateService;
+
+	public static void main(String[] args) throws CertificateException {
 		context = SpringApplication.run(ExampleApplication.class, args);
 
+		certificateService = (CertificateService) context.getBean("certificateService");
 		certificateUtils = (CertificateUtils) context.getBean("certificateUtils");
 		keyStoreReader = (KeyStoreReader) context.getBean("keyStoreReader");
 		keyStoreWriter = (KeyStoreWriter) context.getBean("keyStoreWriter");
@@ -54,9 +58,12 @@ public class ExampleApplication {
 		System.out.println("Ucitavanje sertifikata iz jks fajla:");
 		Certificate loadedCertificate = keyStoreReader.readCertificate("src/main/resources/static/example.jks", "password", "1");
 		System.out.println(loadedCertificate);
-		X509Certificate certtt = (X509Certificate) keyStoreReader.readCertificate("src/main/resources/static/example.jks", "password", "1");
-		PrivateKey pkIssuer = keyStoreReader.readPrivateKey("src/main/resources/static/example.jks", "password", "1", "password");
-		CertificateDto certdto = certificateUtils.X509CertificateToCertificateDto(certtt);
+		X509Certificate certtt = (X509Certificate) keyStoreReader.readCertificate("src/main/resources/static/example.jks", "password", "3146402376");
+
+		Issuer issuer1 = keyStoreReader.readIssuerFromStore("src/main/resources/static/example.jks", "1569848879", "password".toCharArray(), "password".toCharArray());
+		Issuer issuer2 = keyStoreReader.readIssuerFromStore("src/main/resources/static/example.jks", "2403031204", "password".toCharArray(), "password".toCharArray());
+		Issuer issuer3 = keyStoreReader.readIssuerFromStore("src/main/resources/static/example.jks", "1", "password".toCharArray(), "password".toCharArray());
+
 		System.out.println("Provera potpisa:");
 		// to do
 	}

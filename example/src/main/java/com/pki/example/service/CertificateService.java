@@ -10,12 +10,21 @@ import com.pki.example.keystores.KeyStoreWriter;
 import com.pki.example.util.CertificateUtils;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
+import org.bouncycastle.asn1.x509.BasicConstraints;
+import org.bouncycastle.asn1.x509.Extension;
+import org.bouncycastle.asn1.x509.KeyUsage;
+import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.operator.ContentSigner;
+import org.bouncycastle.operator.OperatorCreationException;
+import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.security.*;
 import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,19 +54,19 @@ public class CertificateService {
             case "root":
                 break;
             case "ca":
-                X509Certificate issuerCertificate = (X509Certificate) keyStoreReader.readCertificate("src/main/resources/static/example.jks", "password", createCertificateDto.getIssuerSerialNumber());
+                Issuer issuer = keyStoreReader.readIssuerFromStore("src/main/resources/static/example.jks", createCertificateDto.getIssuerSerialNumber(), "password".toCharArray(), "password".toCharArray());
                 PrivateKey privateKeyIssuer = keyStoreReader.readPrivateKey("src/main/resources/static/example.jks", "password", createCertificateDto.getIssuerSerialNumber(), "password");
                 Random rand = new Random();
                 String randomSerialNumber = (new BigInteger(32, rand)).toString();
                 KeyPair keyPair = generateKeyPair();
                 Subject subject = generateSubject(createCertificateDto, randomSerialNumber, keyPair.getPublic());
-                Issuer issuer = generateIssuer(certificateUtils.X509CertificateToCertificateDto(issuerCertificate), createCertificateDto.getIssuerSerialNumber(), privateKeyIssuer);
-                X509Certificate newCertificate = CertificateGenerator.generateCertificate(subject, issuer, createCertificateDto.getStartDate(), createCertificateDto.getEndDate(), randomSerialNumber);
+//                Issuer issuer = generateIssuer(certificateUtils.X509CertificateToCertificateDto(issuerCertificate), createCertificateDto.getIssuerSerialNumber(), privateKeyIssuer);
+                X509Certificate newCertificate = CertificateGenerator.generateCertificate(subject, issuer, createCertificateDto.getStartDate(), createCertificateDto.getEndDate(), randomSerialNumber, true);
                 keyStoreWriter.loadKeyStore("src/main/resources/static/example.jks",  "password".toCharArray());
-                keyStoreWriter.write(randomSerialNumber, privateKeyIssuer, "password".toCharArray(), newCertificate);
+                keyStoreWriter.write(randomSerialNumber, keyPair.getPrivate(), "password".toCharArray(), newCertificate);
                 keyStoreWriter.saveKeyStore("src/main/resources/static/example.jks",  "password".toCharArray());
                 break;
-            case "end_entity":
+            case "ee":
                 break;
         }
 
@@ -101,4 +110,5 @@ public class CertificateService {
         }
         return null;
     }
+
 }
