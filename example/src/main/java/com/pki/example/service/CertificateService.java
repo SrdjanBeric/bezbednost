@@ -49,43 +49,77 @@ public class CertificateService {
         return certificateDtos;
     }
 
-    public CertificateDto createCertificate(CreateCertificateDto createCertificateDto) {
-        if (createCertificateDto.getAuthoritySubject().equals("root")) {
-            KeyPair keyPair = generateKeyPair();
-            Random rand = new Random();
-            String newSubjectSerialNumber = (new BigInteger(32, rand)).toString();
-            Subject subject = generateSubject(createCertificateDto, newSubjectSerialNumber, keyPair.getPublic());
-            Issuer selfIssuer = generateIssuer(createCertificateDto, newSubjectSerialNumber, keyPair.getPrivate());
-            X509Certificate newCertificate = CertificateGenerator.generateCertificate(subject, selfIssuer, createCertificateDto.getStartDate(), createCertificateDto.getEndDate(), newSubjectSerialNumber, true);
-            keyStoreWriter.loadKeyStore("src/main/resources/static/root.jks", "password".toCharArray());
-            keyStoreWriter.write(newSubjectSerialNumber, keyPair.getPrivate(), "password".toCharArray(), newCertificate);
-            keyStoreWriter.saveKeyStore("src/main/resources/static/root.jks", "password".toCharArray());
+    public List<CertificateDto> getAllRootCertificates(){
+        List<X509Certificate> certificates = keyStoreReader.getAllRoot();
+        List<CertificateDto> certificateDtos = new ArrayList<>();
+        for (X509Certificate cert: certificates) {
+            certificateDtos.add(certificateUtils.X509CertificateToCertificateDto(cert));
         }
-        else if (createCertificateDto.getAuthoritySubject().equals("ca")){
-            Issuer issuer = getIssuer(createCertificateDto);
-            if (issuer == null) return null;
-            Random rand = new Random();
-            String newSubjectSerialNumber = (new BigInteger(32, rand)).toString();
-            KeyPair keyPair = generateKeyPair();
-            Subject subject = generateSubject(createCertificateDto, newSubjectSerialNumber, keyPair.getPublic());
-            X509Certificate newCertificate = CertificateGenerator.generateCertificate(subject, issuer, createCertificateDto.getStartDate(), createCertificateDto.getEndDate(), newSubjectSerialNumber, true);
-            keyStoreWriter.loadKeyStore("src/main/resources/static/ca.jks", "password".toCharArray());
-            keyStoreWriter.write(newSubjectSerialNumber, keyPair.getPrivate(), "password".toCharArray(), newCertificate);
-            keyStoreWriter.saveKeyStore("src/main/resources/static/ca.jks", "password".toCharArray());
-        }else if (createCertificateDto.getAuthoritySubject().equals("ee")){
-            Issuer issuer = getIssuer(createCertificateDto);
-            if (issuer == null) return null;
-            Random rand = new Random();
-            String newSubjectSerialNumber = (new BigInteger(32, rand)).toString();
-            KeyPair keyPair = generateKeyPair();
-            Subject subject = generateSubject(createCertificateDto, newSubjectSerialNumber, keyPair.getPublic());
-            X509Certificate newCertificate = CertificateGenerator.generateCertificate(subject, issuer, createCertificateDto.getStartDate(), createCertificateDto.getEndDate(), newSubjectSerialNumber, false);
-            keyStoreWriter.loadKeyStore("src/main/resources/static/ee.jks", "password".toCharArray());
-            keyStoreWriter.write(newSubjectSerialNumber, keyPair.getPrivate(), "password".toCharArray(), newCertificate);
-            keyStoreWriter.saveKeyStore("src/main/resources/static/ee.jks", "password".toCharArray());
+        return certificateDtos;
+    }
+
+    public List<CertificateDto> getAllCaCertificates(){
+        List<X509Certificate> certificates = keyStoreReader.getAllCa();
+        List<CertificateDto> certificateDtos = new ArrayList<>();
+        for (X509Certificate cert: certificates) {
+            certificateDtos.add(certificateUtils.X509CertificateToCertificateDto(cert));
+        }
+        return certificateDtos;
+    }
+
+    public List<CertificateDto> getAllEeCertificates(){
+        List<X509Certificate> certificates = keyStoreReader.getAllEe();
+        List<CertificateDto> certificateDtos = new ArrayList<>();
+        for (X509Certificate cert: certificates) {
+            certificateDtos.add(certificateUtils.X509CertificateToCertificateDto(cert));
+        }
+        return certificateDtos;
+    }
+
+    public CertificateDto createCertificate(CreateCertificateDto createCertificateDto) {
+        try{
+            if (createCertificateDto.getAuthoritySubject().equals("root")) {
+                KeyPair keyPair = generateKeyPair();
+                Random rand = new Random();
+                String newSubjectSerialNumber = (new BigInteger(32, rand)).toString();
+                Subject subject = generateSubject(createCertificateDto, newSubjectSerialNumber, keyPair.getPublic());
+                Issuer selfIssuer = generateIssuer(createCertificateDto, newSubjectSerialNumber, keyPair.getPrivate());
+                X509Certificate newCertificate = CertificateGenerator.generateCertificate(subject, selfIssuer, createCertificateDto.getStartDate(), createCertificateDto.getEndDate(), newSubjectSerialNumber, true);
+                keyStoreWriter.loadKeyStore("src/main/resources/static/root.jks", "password".toCharArray());
+                keyStoreWriter.write(newSubjectSerialNumber, keyPair.getPrivate(), "password".toCharArray(), newCertificate);
+                keyStoreWriter.saveKeyStore("src/main/resources/static/root.jks", "password".toCharArray());
+                return certificateUtils.X509CertificateToCertificateDto(newCertificate);
+            }
+            else if (createCertificateDto.getAuthoritySubject().equals("ca")){
+                Issuer issuer = getIssuer(createCertificateDto);
+                if (issuer == null) return null;
+                Random rand = new Random();
+                String newSubjectSerialNumber = (new BigInteger(32, rand)).toString();
+                KeyPair keyPair = generateKeyPair();
+                Subject subject = generateSubject(createCertificateDto, newSubjectSerialNumber, keyPair.getPublic());
+                X509Certificate newCertificate = CertificateGenerator.generateCertificate(subject, issuer, createCertificateDto.getStartDate(), createCertificateDto.getEndDate(), newSubjectSerialNumber, true);
+                keyStoreWriter.loadKeyStore("src/main/resources/static/ca.jks", "password".toCharArray());
+                keyStoreWriter.write(newSubjectSerialNumber, keyPair.getPrivate(), "password".toCharArray(), newCertificate);
+                keyStoreWriter.saveKeyStore("src/main/resources/static/ca.jks", "password".toCharArray());
+                return certificateUtils.X509CertificateToCertificateDto(newCertificate);
+            }else if (createCertificateDto.getAuthoritySubject().equals("ee")){
+                Issuer issuer = getIssuer(createCertificateDto);
+                if (issuer == null) return null;
+                Random rand = new Random();
+                String newSubjectSerialNumber = (new BigInteger(32, rand)).toString();
+                KeyPair keyPair = generateKeyPair();
+                Subject subject = generateSubject(createCertificateDto, newSubjectSerialNumber, keyPair.getPublic());
+                X509Certificate newCertificate = CertificateGenerator.generateCertificate(subject, issuer, createCertificateDto.getStartDate(), createCertificateDto.getEndDate(), newSubjectSerialNumber, false);
+                keyStoreWriter.loadKeyStore("src/main/resources/static/ee.jks", "password".toCharArray());
+                keyStoreWriter.write(newSubjectSerialNumber, keyPair.getPrivate(), "password".toCharArray(), newCertificate);
+                keyStoreWriter.saveKeyStore("src/main/resources/static/ee.jks", "password".toCharArray());
+                return certificateUtils.X509CertificateToCertificateDto(newCertificate);
+            }
+            return null;
+        }catch (Exception e){
+            return null;
         }
 
-        return null;
     }
 
     private Issuer getIssuer(CreateCertificateDto createCertificateDto) {
