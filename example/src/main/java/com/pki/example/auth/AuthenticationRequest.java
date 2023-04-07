@@ -2,7 +2,6 @@ package com.pki.example.auth;
 
 import lombok.*;
 
-@Data
 @Getter
 @Setter
 @NoArgsConstructor

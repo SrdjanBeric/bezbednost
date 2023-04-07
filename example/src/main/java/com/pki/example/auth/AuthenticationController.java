@@ -34,10 +34,13 @@ public class AuthenticationController {
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
 
-        final UserDetails user = userDao.finfUserByEmail(request.getEmail());
+        final UserDetails user = userDao.findUserByEmail(request.getEmail());
         if(user!=null){
+
+
             return ResponseEntity.ok(jwtUtils.generateToken(user));
         }
+
         return ResponseEntity.status(400).body("Some error has occured");
     }
 }
