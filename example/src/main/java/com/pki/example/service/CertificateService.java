@@ -125,6 +125,7 @@ public class CertificateService {
     private Issuer getIssuer(CreateCertificateDto createCertificateDto) {
         Issuer issuer = null;
         try{
+
             issuer = keyStoreReader.readIssuerFromStore("src/main/resources/static/ca.jks", createCertificateDto.getIssuerSerialNumber(), "password".toCharArray(), "password".toCharArray());
         }catch(Exception e){
             e.printStackTrace();

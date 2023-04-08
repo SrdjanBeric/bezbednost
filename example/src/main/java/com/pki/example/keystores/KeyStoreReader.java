@@ -16,6 +16,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -48,6 +49,40 @@ public class KeyStoreReader {
      * @param keyPass - lozinka koja je neophodna da se izvuce privatni kljuc
      * @return - podatke o izdavaocu i odgovarajuci privatni kljuc
      */
+    public Date getExpiryDate(String keyStoreFile, String alias, char[] password, char[] keyPass) {
+        try {
+            //Datoteka se ucitava
+            BufferedInputStream in = new BufferedInputStream(new FileInputStream(keyStoreFile));
+            keyStore.load(in, password);
+            Date certExpiryDate = ((X509Certificate) keyStore.getCertificate(alias)).getNotAfter();
+            return certExpiryDate;
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (CertificateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static boolean verify(X509Certificate cert, PublicKey key)
+            throws CertificateException, InvalidKeyException,
+            NoSuchAlgorithmException, NoSuchProviderException {
+
+
+            try {
+                cert.verify(key);
+                return true;
+            } catch (SignatureException se) {
+                return false;
+            }
+
+    }
     public Issuer readIssuerFromStore(String keyStoreFile, String alias, char[] password, char[] keyPass) {
         try {
             //Datoteka se ucitava
