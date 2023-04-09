@@ -14,6 +14,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Getter
@@ -31,11 +32,6 @@ public class UserApp implements UserDetails {
     @NotBlank
     private String username;
 
-    @Column(nullable = false)
-    @Email
-    @NotBlank
-    private String email;
-
     @JsonIgnore
     @Column
     @NotBlank
@@ -43,6 +39,10 @@ public class UserApp implements UserDetails {
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Role role;
+
+    @OneToMany
+    (mappedBy = "userApp", fetch = FetchType.EAGER, cascade= CascadeType.ALL, orphanRemoval=true)
+    private List<Certificate> certificateList;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

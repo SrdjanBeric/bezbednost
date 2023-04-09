@@ -6,6 +6,7 @@ import com.pki.example.service.CertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -21,6 +22,7 @@ public class CertificateController {
     private CertificateService certificateService;
 
     @GetMapping("/all")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public List<CertificateDto> getAllCertificates(){
         return certificateService.getAllCertificates();
     }
@@ -41,6 +43,7 @@ public class CertificateController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("!hasAuthority('END_ENTITY')")
     public CertificateDto createCertificate(@Valid @RequestBody CreateCertificateDto createCertificateDto){
         CertificateDto certificateDto = certificateService.createCertificate(createCertificateDto);
         if(certificateDto == null){
