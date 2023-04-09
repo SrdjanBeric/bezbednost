@@ -28,7 +28,6 @@ public class JwtAthFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(
-
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException{
@@ -36,11 +35,8 @@ public class JwtAthFilter extends OncePerRequestFilter {
         final String userEmail;
         final String jwtToken;
 
-
-
         //ako je header prazan ili ne sadrzi token bearer ne radi nista
         if(authHeader == null || !authHeader.startsWith("Bearer")){
-            //ako ovo zakomentarisem onda radi
             filterChain.doFilter(request,response);
             return;
         }
@@ -48,15 +44,14 @@ public class JwtAthFilter extends OncePerRequestFilter {
                 7
         );
         userEmail = jwtUtils.extractUsername(jwtToken);
-
         if(userEmail!= null && SecurityContextHolder.getContext().getAuthentication()==null){
             UserDetails userDetails = userDao.findUserByEmail(userEmail);
+
                 if (jwtUtils.isTokenValid(jwtToken, userDetails)) {
                     UsernamePasswordAuthenticationToken authToken =
                             new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
-
                 }
 
         }
