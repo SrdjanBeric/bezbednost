@@ -13,14 +13,15 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "user_app")
 public class UserApp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
-    private String username;
-    private String password;
+    public Long id;
+    @Column
+    public String username;
+    @Column
+    public String password;
 
 //    private String email;
 
