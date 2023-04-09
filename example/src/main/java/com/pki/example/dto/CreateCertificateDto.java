@@ -31,4 +31,8 @@ public class CreateCertificateDto {
     private String authoritySubject;
     @NotNull(message = "Issuer serial number is mandatory")
     private String issuerSerialNumber;
+
+    // dodeljujemo username korisnika kome zelimo da izdamo sertifikat
+    @NotNull(message = "Owner Username is mandatory")
+    private String ownerUsername;
 }

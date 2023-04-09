@@ -10,7 +10,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.util.Arrays;
 import java.util.Collection;
@@ -42,7 +41,7 @@ public class UserApp implements UserDetails {
 
     @OneToMany
     (mappedBy = "userApp", fetch = FetchType.EAGER, cascade= CascadeType.ALL, orphanRemoval=true)
-    private List<Certificate> certificateList;
+    private List<CertificateApp> certificateList;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

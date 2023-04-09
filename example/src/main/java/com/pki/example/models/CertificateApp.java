@@ -6,15 +6,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.math.BigInteger;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Certificate {
+public class CertificateApp {
     @Id
-    private Long serialNumber;
+    private BigInteger serialNumber;
     @Column
     private boolean revoked;
 
