@@ -75,7 +75,11 @@ public class CertificateController {
         ){
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
+        // CA je pokusao da izda Root sertifikat
+        if(loggedInUser.getRole().getName().toString().equals("INTERMEDIARY") &&
+                createCertificateDto.getAuthoritySubject().equals("root")){
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
         CertificateDto certificateDto = certificateService.createCertificate(createCertificateDto, certificateOwner);
         if(certificateDto == null){
             return null;
