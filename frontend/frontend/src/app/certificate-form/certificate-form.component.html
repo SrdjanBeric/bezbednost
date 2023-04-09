@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <main class="main-container">
+      <div class="registration-form">
+        <h1>Please Fill in the required Information</h1>
+        <form action="">
+          <!-- DROPDOWN ZA TIP CERTIFICATA -->
+          <label for="certificate-type">Choose a certificate:</label>
+          <select name="certificate-type" id="certificate-type">
+            <option value="CA">CA</option>
+            <option value="EE">EE</option>
+            <option value="ROOT">ROOT</option>
+          </select>
+          <!-- DROPDOWN ZA ODGOVARAJUCEG USERA -->
+          <label for="user"
+            >Choose a user for which you want to give certificate:</label
+          >
+          <select name="user" id="user">
+            <option value="PERA">PERA</option>
+            <option value="MIKA">MIKA</option>
+            <option value="ZIKA">ZIKA</option>
+          </select>
+          <!-- OSTATAK -->
+          <input type="text" placeholder="..." />
+          <input type="text" placeholder="..." />
+          <button class="main-button" type="submit">Submit</button>
+        </form>
+      </div>
+    </main>
+  </body>
+</html>

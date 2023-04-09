@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "webcrypto-core": "^1.7.7"
+  }
+}
