@@ -30,21 +30,23 @@ public class CertificateController {
     @GetMapping("/all")
     @PreAuthorize("hasAuthority('ADMIN')")
     public List<CertificateDto> getAllCertificates(){
-        String a = SecurityContextHolder.getContext().getAuthentication().getName();
         return certificateService.getAllCertificates();
     }
 
     @GetMapping("/allRoot")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public List<CertificateDto> getAllRootCertificates(){
         return certificateService.getAllRootCertificates();
     }
 
     @GetMapping("/allCa")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public List<CertificateDto> getAllCaCertificates(){
         return certificateService.getAllCaCertificates();
     }
 
     @GetMapping("/allEe")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public List<CertificateDto> getAllEeCertificates(){
         return certificateService.getAllEeCertificates();
     }
@@ -59,8 +61,8 @@ public class CertificateController {
         }
 
         // CA je pokusao da izda ADMINU
-        if(loggedInUser.getRole().toString().equals("INTERMEDIARY") &&
-            certificateOwner.getRole().toString().equals("ADMIN")
+        if(loggedInUser.getRole().getName().toString().equals("INTERMEDIARY") &&
+            certificateOwner.getRole().getName().toString().equals("ADMIN")
         ){
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
