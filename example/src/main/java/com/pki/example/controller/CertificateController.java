@@ -2,6 +2,7 @@ package com.pki.example.controller;
 
 import com.pki.example.dto.CertificateDto;
 import com.pki.example.dto.CreateCertificateDto;
+import com.pki.example.models.CertificateApp;
 import com.pki.example.models.UserApp;
 import com.pki.example.service.CertificateService;
 import com.pki.example.service.UserAppService;
@@ -49,6 +50,14 @@ public class CertificateController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public List<CertificateDto> getAllEeCertificates(){
         return certificateService.getAllEeCertificates();
+    }
+
+    @GetMapping("/myCertificates")
+    public ResponseEntity<List<CertificateDto>> getMyCertificates(){
+        UserApp loggedInUser = userAppService.FindByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        List<CertificateDto> certificateAppList = certificateService.getMyCertificates(loggedInUser);
+        return new ResponseEntity<>(certificateAppList, HttpStatus.OK);
+
     }
 
     @PostMapping("/create")
