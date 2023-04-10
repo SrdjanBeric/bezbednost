@@ -1,12 +1,17 @@
 package com.pki.example.service;
 
 import com.pki.example.certificates.CertificateGenerator;
+import com.pki.example.data.Certificate;
+import com.pki.example.data.CertificateType;
 import com.pki.example.data.Issuer;
 import com.pki.example.data.Subject;
 import com.pki.example.dto.CertificateDto;
 import com.pki.example.dto.CreateCertificateDto;
 import com.pki.example.keystores.KeyStoreReader;
 import com.pki.example.keystores.KeyStoreWriter;
+import com.pki.example.models.CertificateApp;
+import com.pki.example.models.UserApp;
+import com.pki.example.repository.CertificateAppRepository;
 import com.pki.example.util.CertificateUtils;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
@@ -24,7 +29,6 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.*;
-import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -34,7 +38,8 @@ import java.util.Random;
 
 @Service
 public class CertificateService {
-
+    @Autowired
+    private CertificateAppRepository certificateAppRepository;
     @Autowired
     private Environment env;
     @Autowired
@@ -80,43 +85,68 @@ public class CertificateService {
         return certificateDtos;
     }
 
-    public CertificateDto createCertificate(CreateCertificateDto createCertificateDto) {
+    public List<CertificateDto> getMyCertificates(UserApp userApp){
+        List<CertificateApp> certificateAppList = certificateAppRepository.findAllByUserAppId(userApp.getId());
+        List<CertificateDto> certificateDtoList = new ArrayList<>();
+        for (CertificateApp cert: certificateAppList) {
+            try{
+                if(cert.getCertificateType() == CertificateType.ROOT){
+                    certificateDtoList.add(certificateUtils.X509CertificateToCertificateDto((X509Certificate) keyStoreReader.readCertificate("src/main/resources/static/root.jks", "password", cert.getSerialNumber().toString())));
+                }else if(cert.getCertificateType() == CertificateType.CA){
+                    certificateDtoList.add(certificateUtils.X509CertificateToCertificateDto((X509Certificate) keyStoreReader.readCertificate("src/main/resources/static/ca.jks", "password", cert.getSerialNumber().toString())));
+                }else if(cert.getCertificateType() == CertificateType.END_ENTITY){
+                    certificateDtoList.add(certificateUtils.X509CertificateToCertificateDto((X509Certificate) keyStoreReader.readCertificate("src/main/resources/static/ee.jks", "password", cert.getSerialNumber().toString())));
+                }
+            } catch (Exception ex){
+                return null;
+            }
+        }
+        return certificateDtoList;
+    }
+
+    public CertificateDto createCertificate(CreateCertificateDto createCertificateDto, UserApp user) {
         try{
             if (createCertificateDto.getAuthoritySubject().equals("root")) {
                 KeyPair keyPair = generateKeyPair();
                 Random rand = new Random();
-                String newSubjectSerialNumber = (new BigInteger(32, rand)).toString();
+                BigInteger newSubjectSerialNumberInteger = new BigInteger(32, rand);
+                String newSubjectSerialNumber = newSubjectSerialNumberInteger.toString();
                 Subject subject = generateSubject(createCertificateDto, newSubjectSerialNumber, keyPair.getPublic());
                 Issuer selfIssuer = generateIssuer(createCertificateDto, newSubjectSerialNumber, keyPair.getPrivate());
                 X509Certificate newCertificate = CertificateGenerator.generateCertificate(subject, selfIssuer, createCertificateDto.getStartDate(), createCertificateDto.getEndDate(), newSubjectSerialNumber, true);
                 keyStoreWriter.loadKeyStore("src/main/resources/static/root.jks", "password".toCharArray());
                 keyStoreWriter.write(newSubjectSerialNumber, keyPair.getPrivate(), "password".toCharArray(), newCertificate);
                 keyStoreWriter.saveKeyStore("src/main/resources/static/root.jks", "password".toCharArray());
+                certificateAppRepository.save(createCertificateApp(user, newSubjectSerialNumberInteger, false, CertificateType.ROOT));
                 return certificateUtils.X509CertificateToCertificateDto(newCertificate);
             }
             else if (createCertificateDto.getAuthoritySubject().equals("ca")){
                 Issuer issuer = getIssuer(createCertificateDto);
                 if (issuer == null) return null;
                 Random rand = new Random();
-                String newSubjectSerialNumber = (new BigInteger(32, rand)).toString();
+                BigInteger newSubjectSerialNumberInteger = new BigInteger(32, rand);
+                String newSubjectSerialNumber = newSubjectSerialNumberInteger.toString();
                 KeyPair keyPair = generateKeyPair();
                 Subject subject = generateSubject(createCertificateDto, newSubjectSerialNumber, keyPair.getPublic());
                 X509Certificate newCertificate = CertificateGenerator.generateCertificate(subject, issuer, createCertificateDto.getStartDate(), createCertificateDto.getEndDate(), newSubjectSerialNumber, true);
                 keyStoreWriter.loadKeyStore("src/main/resources/static/ca.jks", "password".toCharArray());
                 keyStoreWriter.write(newSubjectSerialNumber, keyPair.getPrivate(), "password".toCharArray(), newCertificate);
                 keyStoreWriter.saveKeyStore("src/main/resources/static/ca.jks", "password".toCharArray());
+                certificateAppRepository.save(createCertificateApp(user, newSubjectSerialNumberInteger, false, CertificateType.CA));
                 return certificateUtils.X509CertificateToCertificateDto(newCertificate);
             }else if (createCertificateDto.getAuthoritySubject().equals("ee")){
                 Issuer issuer = getIssuer(createCertificateDto);
                 if (issuer == null) return null;
                 Random rand = new Random();
-                String newSubjectSerialNumber = (new BigInteger(32, rand)).toString();
+                BigInteger newSubjectSerialNumberInteger = new BigInteger(32, rand);
+                String newSubjectSerialNumber = newSubjectSerialNumberInteger.toString();
                 KeyPair keyPair = generateKeyPair();
                 Subject subject = generateSubject(createCertificateDto, newSubjectSerialNumber, keyPair.getPublic());
                 X509Certificate newCertificate = CertificateGenerator.generateCertificate(subject, issuer, createCertificateDto.getStartDate(), createCertificateDto.getEndDate(), newSubjectSerialNumber, false);
                 keyStoreWriter.loadKeyStore("src/main/resources/static/ee.jks", "password".toCharArray());
                 keyStoreWriter.write(newSubjectSerialNumber, keyPair.getPrivate(), "password".toCharArray(), newCertificate);
                 keyStoreWriter.saveKeyStore("src/main/resources/static/ee.jks", "password".toCharArray());
+                certificateAppRepository.save(createCertificateApp(user, newSubjectSerialNumberInteger, false, CertificateType.END_ENTITY));
                 return certificateUtils.X509CertificateToCertificateDto(newCertificate);
             }
             return null;
@@ -197,5 +227,13 @@ public class CertificateService {
         }
         return issuer.getNotBefore().before(newCertificate.getNotBefore())
                 && issuer.getNotAfter().after(newCertificate.getNotAfter());
+    }
+    private CertificateApp createCertificateApp(UserApp userApp, BigInteger serialNumber, boolean revoked, CertificateType certificateType){
+        CertificateApp certificateApp = new CertificateApp();
+        certificateApp.setUserApp(userApp);
+        certificateApp.setSerialNumber(serialNumber);
+        certificateApp.setRevoked(revoked);
+        certificateApp.setCertificateType(certificateType);
+        return certificateApp;
     }
 }

@@ -37,35 +37,57 @@ public class ExampleApplication {
 	public static void main(String[] args) throws CertificateException {
 		context = SpringApplication.run(ExampleApplication.class, args);
 
-//		certificateService = (CertificateService) context.getBean("certificateService");
-//		certificateUtils = (CertificateUtils) context.getBean("certificateUtils");
-//		keyStoreReader = (KeyStoreReader) context.getBean("keyStoreReader");
-//		keyStoreWriter = (KeyStoreWriter) context.getBean("keyStoreWriter");
-//		certExample = (CertificateExample) context.getBean("certificateExample");
-//
-//		com.pki.example.data.Certificate certificate = certExample.getCertificate();
-//		System.out.println("Novi sertifikat:");
-//		System.out.println(certificate.getX509Certificate());
-//
-//		// Inicijalizacija fajla za cuvanje sertifikata
-//		System.out.println("Cuvanje certifikata u jks fajl:");
-//		keyStoreWriter.loadKeyStore("src/main/resources/static/example.jks",  "password".toCharArray());
-//		PrivateKey pk = certificate.getIssuer().getPrivateKey();
-//		keyStoreWriter.write("1", pk, "password".toCharArray(), certificate.getX509Certificate());
-//		keyStoreWriter.saveKeyStore("src/main/resources/static/example.jks",  "password".toCharArray());
-//		System.out.println("Cuvanje certifikata u jks fajl zavrseno.");
-//
-//		System.out.println("Ucitavanje sertifikata iz jks fajla:");
-//		Certificate loadedCertificate = keyStoreReader.readCertificate("src/main/resources/static/example.jks", "password", "1");
-//		System.out.println(loadedCertificate);
-//		X509Certificate certtt = (X509Certificate) keyStoreReader.readCertificate("src/main/resources/static/example.jks", "password", "3146402376");
-//
-//		Issuer issuer1 = keyStoreReader.readIssuerFromStore("src/main/resources/static/example.jks", "1569848879", "password".toCharArray(), "password".toCharArray());
-//		Issuer issuer2 = keyStoreReader.readIssuerFromStore("src/main/resources/static/example.jks", "2403031204", "password".toCharArray(), "password".toCharArray());
-//		Issuer issuer3 = keyStoreReader.readIssuerFromStore("src/main/resources/static/example.jks", "1", "password".toCharArray(), "password".toCharArray());
-//
-//		System.out.println("Provera potpisa:");
-//		// to do
+		certificateService = (CertificateService) context.getBean("certificateService");
+		certificateUtils = (CertificateUtils) context.getBean("certificateUtils");
+		keyStoreReader = (KeyStoreReader) context.getBean("keyStoreReader");
+		keyStoreWriter = (KeyStoreWriter) context.getBean("keyStoreWriter");
+		certExample = (CertificateExample) context.getBean("certificateExample");
+
+
+		// odkomentarisi ukoliko ne postoje root.jks, ca.jks, ee.jks
+//		createRootJks();
+//		createCaJks();
+//		createEeJks();
+		//
+	}
+
+	private static void createRootJks(){
+		com.pki.example.data.Certificate certificate = certExample.getCertificate("1", "1");
+		System.out.println("Novi sertifikat:");
+		System.out.println(certificate.getX509Certificate());
+
+		// Inicijalizacija fajla za cuvanje sertifikata
+		System.out.println("Cuvanje certifikata u jks fajl:");
+		keyStoreWriter.loadKeyStore(null,  "password".toCharArray());
+		PrivateKey pk = certificate.getIssuer().getPrivateKey();
+		keyStoreWriter.write("1", pk, "password".toCharArray(), certificate.getX509Certificate());
+		keyStoreWriter.saveKeyStore("src/main/resources/static/root.jks",  "password".toCharArray());
+	}
+
+	private static void createCaJks(){
+		com.pki.example.data.Certificate certificate = certExample.getCertificate("1", "2");
+		System.out.println("Novi sertifikat:");
+		System.out.println(certificate.getX509Certificate());
+
+		// Inicijalizacija fajla za cuvanje sertifikata
+		System.out.println("Cuvanje certifikata u jks fajl:");
+		keyStoreWriter.loadKeyStore(null,  "password".toCharArray());
+		PrivateKey pk = certificate.getIssuer().getPrivateKey();
+		keyStoreWriter.write("2", pk, "password".toCharArray(), certificate.getX509Certificate());
+		keyStoreWriter.saveKeyStore("src/main/resources/static/ca.jks",  "password".toCharArray());
+	}
+
+	private static void createEeJks(){
+		com.pki.example.data.Certificate certificate = certExample.getCertificate("1", "3");
+		System.out.println("Novi sertifikat:");
+		System.out.println(certificate.getX509Certificate());
+
+		// Inicijalizacija fajla za cuvanje sertifikata
+		System.out.println("Cuvanje certifikata u jks fajl:");
+		keyStoreWriter.loadKeyStore(null,  "password".toCharArray());
+		PrivateKey pk = certificate.getIssuer().getPrivateKey();
+		keyStoreWriter.write("3", pk, "password".toCharArray(), certificate.getX509Certificate());
+		keyStoreWriter.saveKeyStore("src/main/resources/static/ee.jks",  "password".toCharArray());
 	}
 
 }

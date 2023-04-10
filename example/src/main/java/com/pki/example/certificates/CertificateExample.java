@@ -16,25 +16,25 @@ import java.util.Date;
 @Component
 public class CertificateExample {
 
-    public Subject generateSubject() {
+    public Subject generateSubject(String serialNumber) {
         KeyPair keyPairSubject = generateKeyPair();
 
         //klasa X500NameBuilder pravi X500Name objekat koji predstavlja podatke o vlasniku
         X500NameBuilder builder = new X500NameBuilder(BCStyle.INSTANCE);
-        builder.addRDN(BCStyle.CN, "Ivana Kovacevic");
-        builder.addRDN(BCStyle.SURNAME, "Kovacevic");
-        builder.addRDN(BCStyle.GIVENNAME, "Ivana");
+        builder.addRDN(BCStyle.CN, "Admin");
+        builder.addRDN(BCStyle.SURNAME, "Admin");
+        builder.addRDN(BCStyle.GIVENNAME, "Admin");
         builder.addRDN(BCStyle.O, "UNS-FTN");
-        builder.addRDN(BCStyle.OU, "Katedra za informatiku");
+        builder.addRDN(BCStyle.OU, "Admin");
         builder.addRDN(BCStyle.C, "RS");
-        builder.addRDN(BCStyle.E, "kovacevic.ivana@uns.ac.rs");
+        builder.addRDN(BCStyle.E, "Admin@uns.ac.rs");
         //UID (USER ID) je ID korisnika
         builder.addRDN(BCStyle.UID, "123456");
 
-        return new Subject(keyPairSubject.getPublic(), builder.build(), "1");
+        return new Subject(keyPairSubject.getPublic(), builder.build(), serialNumber);
     }
 
-    public Issuer generateIssuer() {
+    public Issuer generateIssuer(String serialNumber) {
         KeyPair kp = generateKeyPair();
         X500NameBuilder builder = new X500NameBuilder(BCStyle.INSTANCE);
         builder.addRDN(BCStyle.CN, "IT sluzba");
@@ -50,7 +50,7 @@ public class CertificateExample {
         //Kreiraju se podaci za issuer-a, sto u ovom slucaju ukljucuje:
         // - privatni kljuc koji ce se koristiti da potpise sertifikat koji se izdaje
         // - podatke o vlasniku sertifikata koji izdaje nov sertifikat
-        return new Issuer(kp.getPrivate(), "2", builder.build());
+        return new Issuer(kp.getPrivate(), serialNumber, builder.build());
     }
 
     private KeyPair generateKeyPair() {
@@ -67,11 +67,11 @@ public class CertificateExample {
         return null;
     }
 
-    public com.pki.example.data.Certificate getCertificate() {
+    public com.pki.example.data.Certificate getCertificate(String serialNumberIssuer, String serialNumberSubject) {
 
         try {
-            Issuer issuer = generateIssuer();
-            Subject subject = generateSubject();
+            Issuer issuer = generateIssuer(serialNumberIssuer);
+            Subject subject = generateSubject(serialNumberSubject);
 
             //Datumi od kad do kad vazi sertifikat
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
