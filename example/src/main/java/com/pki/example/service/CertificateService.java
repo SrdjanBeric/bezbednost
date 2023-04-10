@@ -18,6 +18,7 @@ import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -27,12 +28,15 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
 @Service
 public class CertificateService {
 
+    @Autowired
+    private Environment env;
     @Autowired
     private KeyStoreReader keyStoreReader;
     @Autowired
@@ -177,5 +181,21 @@ public class CertificateService {
         }
         return null;
     }
+    public boolean checkCertificateExpired(CreateCertificateDto createCertificateDto)   {
+        KeyPair keyPair = generateKeyPair();
+        Random rand = new Random();
+        String newSubjectSerialNumber = (new BigInteger(32, rand)).toString();
+        Subject subject = generateSubject(createCertificateDto, newSubjectSerialNumber, keyPair.getPublic());
+        Issuer selfIssuer = generateIssuer(createCertificateDto, newSubjectSerialNumber, keyPair.getPrivate());
+        X509Certificate newCertificate = CertificateGenerator.generateCertificate(subject, selfIssuer, createCertificateDto.getStartDate(), createCertificateDto.getEndDate(), newSubjectSerialNumber, true);
+        X509Certificate issuer = (X509Certificate) new KeyStoreReader().readCertificate(env.getProperty("keystore.path") + "ca.jks", "12345", newCertificate.getSerialNumber().toString());
 
+        boolean root = false;
+        Date now = new Date();
+        if(new KeyStoreReader().getExpiryDate(env.getProperty("keystore.path") + "ca.jks", "12345", newCertificate.getSerialNumber().toString().toCharArray()).before(now)){
+            return false;
+        }
+        return issuer.getNotBefore().before(newCertificate.getNotBefore())
+                && issuer.getNotAfter().after(newCertificate.getNotAfter());
+    }
 }

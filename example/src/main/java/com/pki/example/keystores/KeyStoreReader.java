@@ -46,10 +46,9 @@ public class KeyStoreReader {
      * @param keyStoreFile - datoteka odakle se citaju podaci
      * @param alias - alias putem kog se identifikuje sertifikat izdavaoca
      * @param password - lozinka koja je neophodna da se otvori key store
-     * @param keyPass - lozinka koja je neophodna da se izvuce privatni kljuc
      * @return - podatke o izdavaocu i odgovarajuci privatni kljuc
      */
-    public Date getExpiryDate(String keyStoreFile, String alias, char[] password, char[] keyPass) {
+    public Date getExpiryDate(String keyStoreFile, String alias, char[] password) {
         try {
             //Datoteka se ucitava
             BufferedInputStream in = new BufferedInputStream(new FileInputStream(keyStoreFile));
@@ -70,19 +69,6 @@ public class KeyStoreReader {
         return null;
     }
 
-    public static boolean verify(X509Certificate cert, PublicKey key)
-            throws CertificateException, InvalidKeyException,
-            NoSuchAlgorithmException, NoSuchProviderException {
-
-
-            try {
-                cert.verify(key);
-                return true;
-            } catch (SignatureException se) {
-                return false;
-            }
-
-    }
     public Issuer readIssuerFromStore(String keyStoreFile, String alias, char[] password, char[] keyPass) {
         try {
             //Datoteka se ucitava

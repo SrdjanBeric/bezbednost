@@ -48,4 +48,9 @@ public class CertificateController {
         }
         return certificateDto;
     }
+    @PostMapping("/checkExpired")
+    public boolean checkExpired(@Valid @RequestBody CreateCertificateDto createCertificateDto){
+        boolean expired = certificateService.checkCertificateExpired(createCertificateDto);
+        return expired;
+    }
 }
