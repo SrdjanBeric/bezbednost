@@ -7,7 +7,7 @@ import { User } from '../data/user';
 export class UserService {
   constructor(private http: HttpClient) {}
      getUsers(): Observable<User[]> {
-       return this.http.get<User[]>('http://localhost:8082/User/all');
+       return this.http.get<User[]>('http://localhost:8082/user/all');
      }
 
      /*login(email: string, password: string): Observable<User> {

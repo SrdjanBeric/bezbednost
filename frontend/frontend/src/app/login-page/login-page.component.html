@@ -10,13 +10,14 @@
     <main class="main-container">
       <div class="registration-form">
         <h1>Application</h1>
-        <form action="">
-          <input type="text" placeholder="Enter your username" />
-          <input type="text" placeholder="Password" />
+        <form (ngSubmit)="onSignIn()">
+          <input type="text" placeholder="Enter your username" [(ngModel)]="username" name="username" required/>
+          <input type="password" placeholder="Password" [(ngModel)]="password" name="password" required/>
           <button class="main-button" type="submit">Sign in</button>
-          <button class="secondary-button" type="submit">Register</button>
+          <button class="secondary-button" type="button" (click)="onRegister()">Register</button>
         </form>
       </div>
     </main>
+    
   </body>
 </html>
