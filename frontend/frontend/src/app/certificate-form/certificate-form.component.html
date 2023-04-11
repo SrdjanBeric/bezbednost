@@ -10,28 +10,49 @@
     <main class="main-container">
       <div class="registration-form">
         <h1>Please Fill in the required Information</h1>
-        <form action="">
-          <!-- DROPDOWN ZA TIP CERTIFICATA -->
-          <label for="certificate-type">Choose a certificate:</label>
-          <select name="certificate-type" id="certificate-type">
-            <option value="CA">CA</option>
-            <option value="EE">EE</option>
-            <option value="ROOT">ROOT</option>
+        <form #certificateForm="ngForm" (ngSubmit)="onSubmit()">
+          <label for="commonNameSubject">Common Name Subject:</label>
+          <input type="text" id="commonNameSubject" name="commonNameSubject" [(ngModel)]="createCertificateDto.commonNameSubject" required>
+        
+          <label for="nameSubject">Name Subject:</label>
+          <input type="text" id="nameSubject" name="nameSubject" [(ngModel)]="createCertificateDto.nameSubject" required>
+        
+          <label for="surnameSubject">Surname Subject:</label>
+          <input type="text" id="surnameSubject" name="surnameSubject" [(ngModel)]="createCertificateDto.surnameSubject" required>
+        
+          <label for="usernameSubject">Username Subject:</label>
+          <input type="text" id="usernameSubject" name="usernameSubject" [(ngModel)]="createCertificateDto.usernameSubject" required>
+        
+          <label for="countrySubject">Country Subject:</label>
+          <input type="text" id="countrySubject" name="countrySubject" [(ngModel)]="createCertificateDto.countrySubject" required>
+        
+          <label for="startDate">Start Date:</label>
+          <input type="date" id="startDate" name="startDate" [(ngModel)]="createCertificateDto.startDate" required>
+        
+          <label for="endDate">End Date:</label>
+          <input type="date" id="endDate" name="endDate" [(ngModel)]="createCertificateDto.endDate" required>
+        
+          <label for="authoritySubject">Authority Subject:</label>
+          <select id="authoritySubject" name="authoritySubject" [(ngModel)]="createCertificateDto.authoritySubject" required>
+            <option [value]="CertificateType.ROOT">Root</option>
+            <option [value]="CertificateType.CA">CA</option>
+            <option [value]="CertificateType.END_ENTITY">EE</option>
+        </select>
+        
+          <label for="issuerSerialNumber">Issuer Serial Number:</label>
+          <select id="issuerSerialNumber" name="issuerSerialNumber" [(ngModel)]="createCertificateDto.issuerSerialNumber" required>
+            <option *ngFor="let certificate of certificates" [value]="certificate.serialNumberIssuer">{{certificate.serialNumberSubject}}, {{certificate.commonNameSubject}},{{certificate.countrySubject}}</option>
           </select>
-          <!-- DROPDOWN ZA ODGOVARAJUCEG USERA -->
-          <label for="user"
-            >Choose a user for which you want to give certificate:</label
-          >
-          <select name="user" id="user">
-            <option value="PERA">PERA</option>
-            <option value="MIKA">MIKA</option>
-            <option value="ZIKA">ZIKA</option>
+        
+          <label for="ownerUsername">Owner Username:</label>
+          <select id="ownerUsername" name="ownerUsername" [(ngModel)]="createCertificateDto.ownerUsername" required>
+            <option *ngFor="let user of users" [value]="user.username">{{user.id}}, {{user.username}}</option>
           </select>
-          <!-- OSTATAK -->
-          <input type="text" placeholder="..." />
-          <input type="text" placeholder="..." />
-          <button class="main-button" type="submit">Submit</button>
+        
+          <button type="submit" [disabled]="certificateForm.invalid">Submit</button>
         </form>
+        
+        
       </div>
     </main>
   </body>
