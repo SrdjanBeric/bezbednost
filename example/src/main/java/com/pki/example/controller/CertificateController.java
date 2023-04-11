@@ -92,4 +92,16 @@ public class CertificateController {
         boolean expired = certificateService.checkCertificateExpired(createCertificateDto);
         return expired;
     }
+    @PostMapping("/checkRevoked")
+    public boolean isCertificateRevoked(@Valid @RequestBody CertificateDto certDto){
+        UserApp loggedInUser = userAppService.FindByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        boolean revoked = certificateService.isCertificateRevoked(loggedInUser,certDto);
+        return revoked;
+    }
+    @PostMapping("/revoke")
+    public ResponseEntity<List<CertificateDto>> revoke(@Valid @RequestBody CertificateDto certDto){
+        UserApp loggedInUser = userAppService.FindByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        certificateService.revokeCertificate(loggedInUser,certDto);
+        return getMyCertificates();
+    }
 }

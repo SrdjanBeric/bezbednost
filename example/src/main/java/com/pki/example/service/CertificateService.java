@@ -219,8 +219,6 @@ public class CertificateService {
         Issuer selfIssuer = generateIssuer(createCertificateDto, newSubjectSerialNumber, keyPair.getPrivate());
         X509Certificate newCertificate = CertificateGenerator.generateCertificate(subject, selfIssuer, createCertificateDto.getStartDate(), createCertificateDto.getEndDate(), newSubjectSerialNumber, true);
         X509Certificate issuer = (X509Certificate) new KeyStoreReader().readCertificate(env.getProperty("keystore.path") + "ca.jks", "12345", newCertificate.getSerialNumber().toString());
-
-        boolean root = false;
         Date now = new Date();
         if(new KeyStoreReader().getExpiryDate(env.getProperty("keystore.path") + "ca.jks", "12345", newCertificate.getSerialNumber().toString().toCharArray()).before(now)){
             return false;
@@ -228,6 +226,7 @@ public class CertificateService {
         return issuer.getNotBefore().before(newCertificate.getNotBefore())
                 && issuer.getNotAfter().after(newCertificate.getNotAfter());
     }
+
     private CertificateApp createCertificateApp(UserApp userApp, BigInteger serialNumber, boolean revoked, CertificateType certificateType){
         CertificateApp certificateApp = new CertificateApp();
         certificateApp.setUserApp(userApp);
@@ -236,4 +235,47 @@ public class CertificateService {
         certificateApp.setCertificateType(certificateType);
         return certificateApp;
     }
+    public boolean isCertificateRevoked(UserApp userApp,CertificateDto certDTO){
+
+        List<CertificateApp> certificateAppList = certificateAppRepository.findAllByUserAppId(userApp.getId());
+        for (CertificateApp cert: certificateAppList) {
+            try{
+                if(cert.isRevoked() && cert.getSerialNumber().toString()==certDTO.getSerialNumberSubject())
+                    return true;
+            } catch (Exception ex){
+                return true;
+            }
+        }
+        return false;
+    }
+    public void revokeCertificate(UserApp userApp,CertificateDto certDTO){
+
+        List<CertificateApp> certificateAppList = certificateAppRepository.findAllByUserAppId(userApp.getId());
+        for (CertificateApp cert: certificateAppList) {
+            try{
+                if(cert.getSerialNumber().toString()==certDTO.getSerialNumberSubject())
+                    cert.setRevoked(true);
+            } catch (Exception ex){
+                return;
+            }
+        }
+        return;
+    }
+   /* private Issuer getIssuer(CreateCertificateDto createCertificateDto) {
+        Issuer issuer = null;
+        try{
+
+            issuer = keyStoreReader.readIssuerFromStore("src/main/resources/static/ca.jks", createCertificateDto.getIssuerSerialNumber(), "password".toCharArray(), "password".toCharArray());
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        try{
+            if(issuer == null){
+                issuer = keyStoreReader.readIssuerFromStore("src/main/resources/static/root.jks", createCertificateDto.getIssuerSerialNumber(), "password".toCharArray(), "password".toCharArray());
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return issuer;
+    }*/
 }

@@ -24,4 +24,8 @@ public class CertificateApp {
     private CertificateType certificateType;
     @ManyToOne(fetch = FetchType.EAGER)
     private UserApp userApp;
+
+    public boolean isRevoked() {
+        return revoked;
+    }
 }
