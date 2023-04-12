@@ -1,10 +1,9 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
 import { Certificate } from '../data/certificate';
 import { Observable } from 'rxjs';
 import { CreateCertificateDto } from '../dto/Create-certificate.dto';
 import { CertificateDto } from '../dto/Certificate.dto';
-
 @Injectable({ providedIn: 'root' })
 export class CertificateService {
   constructor(private http: HttpClient) {}
@@ -41,9 +40,13 @@ export class CertificateService {
     return this.http.get<CertificateDto[]>(`${this.baseUrl}/all`);
   }
   downloadCertificate(CertificateDto: CertificateDto): any {
-    /*this.http.get('this.baseUrl}/download', {responseType: "blob", headers: {}})
-    .subscribe(blob => {
-      saveAs(blob, 'download.cer');
-    });*/
+    const url = `${this.baseUrl}/download/${CertificateDto.serialNumberSubject}`;
+    this.http.get(url, { responseType: 'blob' }).subscribe((blob) => {
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = `${CertificateDto.serialNumberSubject}.cer`;
+      link.click();
+      window.URL.revokeObjectURL(link.href);
+    });
   }
 }
