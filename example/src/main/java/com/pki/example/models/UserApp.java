@@ -39,6 +39,7 @@ public class UserApp implements UserDetails {
     @ManyToOne(fetch = FetchType.EAGER)
     private Role role;
 
+    @JsonIgnore
     @OneToMany
     (mappedBy = "userApp", fetch = FetchType.EAGER, cascade= CascadeType.ALL, orphanRemoval=true)
     private List<CertificateApp> certificateList;
