@@ -10,6 +10,10 @@ export class UserService {
        return this.http.get<User[]>('http://localhost:8082/user/all');
      }
 
+     getAvailableUsers(): Observable<User[]> {
+      return this.http.get<User[]>('http://localhost:8082/user/availableSubjectUsers');
+    }
+
      /*login(email: string, password: string): Observable<User> {
        return this.http.post<User>('http://localhost:8082/User/login', {
          email,

@@ -34,14 +34,14 @@
         
           <label for="authoritySubject">Authority Subject:</label>
           <select id="authoritySubject" name="authoritySubject" [(ngModel)]="createCertificateDto.authoritySubject" required>
-            <option [value]="CertificateType.ROOT">Root</option>
+            <option  [disabled]="!isAdmin" [value]="CertificateType.ROOT">Root</option>
             <option [value]="CertificateType.CA">CA</option>
             <option [value]="CertificateType.END_ENTITY">EE</option>
         </select>
         
           <label for="issuerSerialNumber">Issuer Serial Number:</label>
           <select id="issuerSerialNumber" name="issuerSerialNumber" [(ngModel)]="createCertificateDto.issuerSerialNumber" required>
-            <option *ngFor="let certificate of certificates" [value]="certificate.serialNumberIssuer">{{certificate.serialNumberSubject}}, {{certificate.commonNameSubject}},{{certificate.countrySubject}}</option>
+            <option *ngFor="let certificate of certificates" [value]="certificate.serialNumberSubject">{{certificate.serialNumberSubject}}, {{certificate.commonNameSubject}},{{certificate.countrySubject}} {{certificate.authoritySubject }}</option>
           </select>
         
           <label for="ownerUsername">Owner Username:</label>
