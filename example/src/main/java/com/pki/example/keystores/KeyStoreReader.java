@@ -82,7 +82,8 @@ public class KeyStoreReader {
             PrivateKey privateKey = (PrivateKey) keyStore.getKey(alias, keyPass);
 
             X500Name issuerName = new JcaX509CertificateHolder((X509Certificate) cert).getSubject();
-            return new Issuer(privateKey, "", issuerName);
+            String s = String.valueOf(issuerName);
+            return new Issuer(privateKey, getSerialNumber(s), issuerName);
         } catch (KeyStoreException e) {
             e.printStackTrace();
         } catch (FileNotFoundException e) {
@@ -97,6 +98,16 @@ public class KeyStoreReader {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static String getSerialNumber(String input) {
+        String[] parts = input.split(",");
+        for (String part : parts) {
+            if (part.startsWith("SERIALNUMBER=")) {
+                return part.substring(14);
+            }
+        }
+        return "";
     }
 
     /**

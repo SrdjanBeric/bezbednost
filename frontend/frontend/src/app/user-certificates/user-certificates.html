@@ -1,0 +1,14 @@
+<h2>Certificates</h2>
+<ul class="users">
+  <li *ngFor="let cert of certificates">
+    <div class="row">
+      <span class="subjectid"
+        >{{ cert.nameSubject }} ({{ cert.authoritySubject }})</span
+      >
+      <span class="startDate">{{ cert.startDate }}</span>
+      <span class="endDate">{{ cert.endDate }}</span>
+      <button (click)="revoke(cert)">Revoke</button>
+      <button (click)="download(cert)">Download</button>
+    </div>
+  </li>
+</ul>

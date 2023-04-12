@@ -4,7 +4,7 @@ export interface CertificateDto {
   surnameSubject: string;
   usernameSubject: string;
   countrySubject: string;
-  serialNumberSubject?: string;
+  serialNumberSubject: string;
   startDate?: Date;
   endDate?: Date;
   authoritySubject: string;

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
 import javax.validation.Valid;
+import java.math.BigInteger;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.List;
@@ -71,7 +72,7 @@ public class CertificateController {
 
         // CA je pokusao da izda ADMINU
         if(loggedInUser.getRole().getName().toString().equals("INTERMEDIARY") &&
-            certificateOwner.getRole().getName().toString().equals("ADMIN")
+                certificateOwner.getRole().getName().toString().equals("ADMIN")
         ){
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
@@ -92,5 +93,29 @@ public class CertificateController {
     public boolean checkExpired(@Valid @RequestBody CreateCertificateDto createCertificateDto){
         boolean expired = certificateService.checkCertificateExpired(createCertificateDto);
         return expired;
+    }
+    @PostMapping("/checkRevoked")
+    public boolean isCertificateRevoked(@Valid @RequestBody CertificateDto certDto){
+        UserApp loggedInUser = userAppService.FindByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        boolean revoked = certificateService.isCertificateRevoked(loggedInUser,certDto);
+        return revoked;
+    }
+//    @PostMapping("/revoke")
+//    public ResponseEntity<List<CertificateDto>> revoke(@Valid @RequestBody CertificateDto certDto){
+//        UserApp loggedInUser = userAppService.FindByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+//        certificateService.revokeCertificate(loggedInUser,certDto);
+//        return getMyCertificates();
+//    }
+
+    @PostMapping("/revoke/v2")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<Boolean> revokeV2(@RequestBody String serialNumber){
+        certificateService.revokeCertificateV2(serialNumber);
+        return ResponseEntity.ok(null);
+    }
+
+    @GetMapping("/valid/{serialNumber}")
+    public Boolean isValid(@PathVariable String serialNumber){
+        return certificateService.checkIfValid(serialNumber);
     }
 }

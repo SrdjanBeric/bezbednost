@@ -4,13 +4,14 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { AuthInterceptor } from './service/interceptor';
 
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginPageComponent } from './login-page/login-page.component';
 import { RegistrationPageComponent } from './registration-page/registration-page.component';
 import { CertificateFormComponent } from './certificate-form/certificate-form.component';
 import { UserListComponent } from './user-list/user-list.component';
+import { UserCertificates } from './user-certificates/user-certificates';
+import { CertificateListComponent } from './certificate-list/certificate-list/certificate-list.component';
 
 @NgModule({
   declarations: [
@@ -18,15 +19,14 @@ import { UserListComponent } from './user-list/user-list.component';
     LoginPageComponent,
     RegistrationPageComponent,
     CertificateFormComponent,
-    UserListComponent
+    UserListComponent,
+    UserCertificates,
+    CertificateListComponent,
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
-    FormsModule
+  imports: [BrowserModule, AppRoutingModule, HttpClientModule, FormsModule],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
   ],
-  providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

@@ -31,10 +31,7 @@ import java.math.BigInteger;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class CertificateService {
@@ -219,8 +216,6 @@ public class CertificateService {
         Issuer selfIssuer = generateIssuer(createCertificateDto, newSubjectSerialNumber, keyPair.getPrivate());
         X509Certificate newCertificate = CertificateGenerator.generateCertificate(subject, selfIssuer, createCertificateDto.getStartDate(), createCertificateDto.getEndDate(), newSubjectSerialNumber, true);
         X509Certificate issuer = (X509Certificate) new KeyStoreReader().readCertificate(env.getProperty("keystore.path") + "ca.jks", "12345", newCertificate.getSerialNumber().toString());
-
-        boolean root = false;
         Date now = new Date();
         if(new KeyStoreReader().getExpiryDate(env.getProperty("keystore.path") + "ca.jks", "12345", newCertificate.getSerialNumber().toString().toCharArray()).before(now)){
             return false;
@@ -228,6 +223,7 @@ public class CertificateService {
         return issuer.getNotBefore().before(newCertificate.getNotBefore())
                 && issuer.getNotAfter().after(newCertificate.getNotAfter());
     }
+
     private CertificateApp createCertificateApp(UserApp userApp, BigInteger serialNumber, boolean revoked, CertificateType certificateType){
         CertificateApp certificateApp = new CertificateApp();
         certificateApp.setUserApp(userApp);
@@ -236,4 +232,132 @@ public class CertificateService {
         certificateApp.setCertificateType(certificateType);
         return certificateApp;
     }
+    public boolean isCertificateRevoked(UserApp userApp,CertificateDto certDTO){
+
+        List<CertificateApp> certificateAppList = certificateAppRepository.findAllByUserAppId(userApp.getId());
+        for (CertificateApp cert: certificateAppList) {
+            try{
+                if(cert.isRevoked() && cert.getSerialNumber().toString().equals(certDTO.getSerialNumberSubject()))
+                    return true;
+            } catch (Exception ex){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean revokeCertificateV2(String serialNumber){
+        try{
+            BigInteger serialNubmerBigInt = new BigInteger(serialNumber);
+            CertificateApp certificate = certificateAppRepository.getBySerialNumber(serialNubmerBigInt);
+            if(certificate == null){
+                return false;
+            }
+            certificate.setRevoked(true);
+            certificateAppRepository.save(certificate);
+            return true;
+        }catch(Exception ex){
+            return false;
+        }
+    }
+
+//    public boolean checkIfValid(String serialNumber){
+//        CertificateApp certificateApp = certificateAppRepository.getBySerialNumber(new BigInteger(serialNumber));
+//        if(certificateApp.isRevoked()){
+//            return false;
+//        }
+//        try{
+//            X509Certificate cert = (X509Certificate) keyStoreReader.readCertificate("src/main/resources/static/root.jks", "password", serialNumber);
+//            Date now = new Date();
+//            if(cert.getNotAfter().before(now)){
+//                return false;
+//            }
+//            return true;
+//        }catch (Exception ex){
+//            try{
+//                X509Certificate cert = (X509Certificate) keyStoreReader.readCertificate("src/main/resources/static/ca.jks", "password", serialNumber);
+//                Date now = new Date();
+//                if(cert.getNotAfter().before(now)){
+//                    return false;
+//                }
+//                Issuer issuer = readIssuer(serialNumber);
+//                if(issuer == null){
+//                    return false;
+//                }
+//                return checkIfValid(issuer.getSerialNumber());
+//            }catch (Exception ex1){
+//                try{
+//                    X509Certificate cert = (X509Certificate) keyStoreReader.readCertificate("src/main/resources/static/ee.jks", "password", serialNumber);
+//                    Date now = new Date();
+//                    if(cert.getNotAfter().before(now)){
+//                        return false;
+//                    }
+//                    Issuer issuer = readIssuer(serialNumber);
+//                    if(issuer == null){
+//                        return false;
+//                    }
+//                    return checkIfValid(issuer.getSerialNumber());
+//                }catch (Exception ex2){
+//
+//                }
+//            }
+//        }
+//        return false;
+//    }
+    public boolean checkIfValid(String serialNumber){
+        CertificateApp certificateApp = certificateAppRepository.getBySerialNumber(new BigInteger(serialNumber));
+        if(certificateApp.isRevoked()){
+            return false;
+        }
+        try {
+            X509Certificate cert = (X509Certificate) keyStoreReader.readCertificate("src/main/resources/static/root.jks", "password", serialNumber);
+            if (cert != null) {
+                Date now = new Date();
+                if (cert.getNotAfter().before(now)) {
+                    return false;
+                }
+                return true;
+            } else {
+                X509Certificate cert2 = (X509Certificate) keyStoreReader.readCertificate("src/main/resources/static/ca.jks", "password", serialNumber);
+                if (cert2 != null) {
+                    Date now = new Date();
+                    if (cert2.getNotAfter().before(now)) {
+                        return false;
+                    } else {
+                        return checkIfValid(certificateUtils.X509CertificateToCertificateDto(cert2).getSerialNumberIssuer());
+                    }
+                } else {
+                    X509Certificate cert3 = (X509Certificate) keyStoreReader.readCertificate("src/main/resources/static/ee.jks", "password", serialNumber);
+                    if (cert3 != null) {
+                        Date now = new Date();
+                        if (cert3.getNotAfter().before(now)) {
+                            return false;
+                        }
+                        return checkIfValid(certificateUtils.X509CertificateToCertificateDto(cert3).getSerialNumberIssuer());
+                    } else {
+                        return false;
+                    }
+                }
+            }
+        }catch(Exception ex){
+            return false;
+        }
+    }
+
+
+
+    public Issuer readIssuer(String serialNumber){
+        try{
+            Issuer issuer = keyStoreReader.readIssuerFromStore("src/main/resources/static/root.jks", serialNumber, "password".toCharArray(), "password".toCharArray());
+            return issuer;
+        }catch (Exception ex){
+            try{
+                Issuer issuer = keyStoreReader.readIssuerFromStore("src/main/resources/static/ca.jks", serialNumber, "password".toCharArray(), "password".toCharArray());
+                return issuer;
+            }catch (Exception ex1){
+                return null;
+            }
+        }
+    }
+
 }
