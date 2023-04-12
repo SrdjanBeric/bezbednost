@@ -85,6 +85,30 @@ public class CertificateService {
         return certificateDtos;
     }
 
+    public X509Certificate getCertificateBySerialNumber(String serialNumber){
+        X509Certificate certificate = null;
+        try{
+            certificate = (X509Certificate) keyStoreReader.readCertificate("src/main/resources/static/root.jks", "password", serialNumber);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        try{
+            if(certificate == null){
+                certificate = (X509Certificate) keyStoreReader.readCertificate("src/main/resources/static/ca.jks", "password", serialNumber);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        try{
+            if(certificate == null){
+                certificate = (X509Certificate) keyStoreReader.readCertificate("src/main/resources/static/ee.jks", "password", serialNumber);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return certificate;
+    }
+
     public List<CertificateDto> getMyCertificates(UserApp userApp){
         List<CertificateApp> certificateAppList = certificateAppRepository.findAllByUserAppId(userApp.getId());
         List<CertificateDto> certificateDtoList = new ArrayList<>();

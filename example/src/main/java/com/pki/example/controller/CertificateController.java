@@ -7,15 +7,16 @@ import com.pki.example.models.UserApp;
 import com.pki.example.service.CertificateService;
 import com.pki.example.service.UserAppService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
-
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import javax.validation.Valid;
 import java.security.cert.Certificate;
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.List;
 
@@ -71,7 +72,7 @@ public class CertificateController {
 
         // CA je pokusao da izda ADMINU
         if(loggedInUser.getRole().getName().toString().equals("INTERMEDIARY") &&
-            certificateOwner.getRole().getName().toString().equals("ADMIN")
+                certificateOwner.getRole().getName().toString().equals("ADMIN")
         ){
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
@@ -84,7 +85,6 @@ public class CertificateController {
         if(certificateDto == null){
             return null;
         }
-
         return new ResponseEntity<>(certificateDto, HttpStatus.OK);
 
     }
@@ -92,5 +92,24 @@ public class CertificateController {
     public boolean checkExpired(@Valid @RequestBody CreateCertificateDto createCertificateDto){
         boolean expired = certificateService.checkCertificateExpired(createCertificateDto);
         return expired;
+    }
+
+    @GetMapping(value = "/download/{serialNumber}",  produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public ResponseEntity<byte[]> download(@PathVariable String serialNumber){
+        X509Certificate certificate = certificateService.getCertificateBySerialNumber(serialNumber);
+        if(certificate == null){
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+        try {
+            byte[] certData = certificate.getEncoded();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentDisposition(ContentDisposition.attachment().filename(serialNumber+".cer").build());
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            headers.setContentLength(certData.length);
+            return new ResponseEntity<>(certData, headers, HttpStatus.OK);
+        } catch (CertificateEncodingException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }
