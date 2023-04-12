@@ -30,6 +30,13 @@ export class CertificateService {
       CertificateDto.serialNumberSubject
     );
   }
+
+  validateCertificate(CertificateDto: CertificateDto): Observable<any> {
+    return this.http.get<any>(
+      `${this.baseUrl}/valid/${CertificateDto.serialNumberSubject}`
+    );
+  }
+
   getAllCertificates(): Observable<any> {
     return this.http.get<CertificateDto[]>(`${this.baseUrl}/all`);
   }

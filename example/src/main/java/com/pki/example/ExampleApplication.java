@@ -45,9 +45,9 @@ public class ExampleApplication {
 
 
 		// odkomentarisi ukoliko ne postoje root.jks, ca.jks, ee.jks
-//		createRootJks();
-//		createCaJks();
-//		createEeJks();
+		createRootJks();
+		createCaJks();
+		createEeJks();
 		//
 	}
 
