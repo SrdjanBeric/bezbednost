@@ -3,9 +3,7 @@ import { CertificateService } from 'src/app/service/certificate.service';
 import { CertificateDto } from 'src/app/dto/Certificate.dto';
 @Component({
   selector: 'app-user-certificates',
-  templateUrl: './user-certificates.component.html',
-  styleUrls: ['./user-certificates.component.css']
-})
+  templateUrl: './user-certificates.html'})
 export class UserCertificates implements OnInit {
 
   public certificates:CertificateDto[]=[];
