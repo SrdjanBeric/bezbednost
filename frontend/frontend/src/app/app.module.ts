@@ -10,7 +10,8 @@ import { AppComponent } from './app.component';
 import { LoginPageComponent } from './login-page/login-page.component';
 import { RegistrationPageComponent } from './registration-page/registration-page.component';
 import { CertificateFormComponent } from './certificate-form/certificate-form.component';
-
+import { UserCertificates } from './user-certificates/user-certificates';
+import { CertificateListComponent } from './certificate-list/certificate-list/certificate-list.component';
 import { UserListComponent } from './user-list/user-list.component';
 
 
@@ -20,7 +21,9 @@ import { UserListComponent } from './user-list/user-list.component';
     LoginPageComponent,
     RegistrationPageComponent,
     CertificateFormComponent,
-    UserListComponent
+    UserListComponent,
+    UserCertificates,
+    CertificateListComponent
 
   ],
   imports: [

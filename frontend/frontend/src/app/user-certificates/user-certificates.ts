@@ -6,7 +6,7 @@ import { CertificateDto } from 'src/app/dto/Certificate.dto';
   templateUrl: './user-certificates.component.html',
   styleUrls: ['./user-certificates.component.css']
 })
-export class CertificateListComponent implements OnInit {
+export class UserCertificates implements OnInit {
 
   public certificates:CertificateDto[]=[];
   constructor(private certificateService:CertificateService) { }
