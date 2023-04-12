@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CertificateService } from 'src/app/service/certificate.service';
 import { CertificateDto } from 'src/app/dto/Certificate.dto';
 @Component({
-  selector: 'app-certificate-list',
-  templateUrl: './certificate-list.component.html',
-  styleUrls: ['./certificate-list.component.css']
+  selector: 'app-user-certificates',
+  templateUrl: './user-certificates.component.html',
+  styleUrls: ['./user-certificates.component.css']
 })
 export class CertificateListComponent implements OnInit {
 
@@ -12,7 +12,7 @@ export class CertificateListComponent implements OnInit {
   constructor(private certificateService:CertificateService) { }
 
   ngOnInit(): void {
-    this.certificateService.getAllCertificates().subscribe(res=>
+    this.certificateService.getMyCertificates().subscribe(res=>
       {
         this.certificates=res;
       });

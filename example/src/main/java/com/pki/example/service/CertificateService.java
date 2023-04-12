@@ -255,27 +255,12 @@ public class CertificateService {
             try{
                 if(cert.getSerialNumber().toString()==certDTO.getSerialNumberSubject())
                     cert.setRevoked(true);
+                if(cert.getSerialNumber().toString()==certDTO)
             } catch (Exception ex){
                 return;
             }
         }
         return;
     }
-   /* private Issuer getIssuer(CreateCertificateDto createCertificateDto) {
-        Issuer issuer = null;
-        try{
 
-            issuer = keyStoreReader.readIssuerFromStore("src/main/resources/static/ca.jks", createCertificateDto.getIssuerSerialNumber(), "password".toCharArray(), "password".toCharArray());
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-        try{
-            if(issuer == null){
-                issuer = keyStoreReader.readIssuerFromStore("src/main/resources/static/root.jks", createCertificateDto.getIssuerSerialNumber(), "password".toCharArray(), "password".toCharArray());
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return issuer;
-    }*/
 }
