@@ -1,0 +1,83 @@
+<div>
+    
+  <div>
+    <ul class="centre-information temp-info">
+      <li class="fixed-width">ID</li>
+      <li class="fixed-width">NAME</li>
+      <li class="longer-width">ADDRESS</li>
+      <li class="longer-width">DESCRIPTION</li>
+      <li class="fixed-width">AvgGRADE</li>
+      <li class="fixed-width">
+        
+      </li>
+    </ul>
+  </div>
+  <div
+    class="container"
+    *ngFor="let centre of filteredCenters; let i = index"
+  >
+    <div *ngIf="centres.length === 0">
+      <p>No centres were found</p>
+    </div>
+    <div class="ul-holder">
+      <ul class="centre-information">
+        <li class="fixed-width">{{ centre.id }}</li>
+        <li class="fixed-width">{{ centre.name }}</li>
+        <li class="longer-width">{{ centre.adress }}</li>
+        <li class="longer-width">{{ centre.description }}</li>
+        <li class="fixed-width">{{ centre.avgGrade }}</li>
+        <li class="fixed-width button-container">
+          <button class="btn btn-blue" type="button" (click)="onEdit(i)">
+            Edit
+          </button>
+          <button class="btn btn-red" type="button" (click)="onDelete(i)">
+            X
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <form
+    class="form-centre"
+    *ngIf="editing"
+    [formGroup]="editCentreForm"
+    (ngSubmit)="onSubmit()"
+  >
+    <label for="id">ID:</label>
+    <input type="text" id="id" formControlName="id" [(ngModel)]="centre.id" />
+    <br />
+    <label for="name">Name:</label>
+    <input
+      type="text"
+      id="name"
+      formControlName="name"
+      [(ngModel)]="centre.name"
+    />
+    <br />
+    <label for="adress">Adress:</label>
+    <input
+      type="text"
+      id="adress"
+      formControlName="adress"
+      [(ngModel)]="centre.adress"
+    />
+    <br />
+    <label for="description">Description:</label>
+    <input
+      type="text"
+      id="description"
+      formControlName="description"
+      [(ngModel)]="centre.description"
+    />
+    <br />
+    <label for="avgGrade">Avg Grade:</label>
+    <input
+      type="text"
+      id="avgGrade"
+      formControlName="avgGrade"
+      [(ngModel)]="centre.avgGrade"
+    />
+    <br />
+    <button class="btn btn-green longer-width" type="submit">Save</button>
+  </form>
