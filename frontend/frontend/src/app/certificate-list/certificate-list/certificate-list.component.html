@@ -1,0 +1,12 @@
+<h2>Certificates</h2>
+<ul class="heroes">
+    <li *ngFor="let cert of certificates">  
+      <span class="issuerid">{{cert.issuer.serialnumber}}</span>
+      <span class="subjectid">{{cert.subject.serialnumber}}</span>
+      <span class="id">{{cert.serialNumber}}</span>
+      <span class="startDate">{{cert.startDate}}</span>
+      <span class="endDate">{{cert.endDate}}</span>
+      <button>Revoke</button>
+      <button>Download</button>
+    </li>
+</ul>
