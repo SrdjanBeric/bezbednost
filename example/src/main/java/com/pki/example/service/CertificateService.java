@@ -240,7 +240,7 @@ public class CertificateService {
         List<CertificateApp> certificateAppList = certificateAppRepository.findAllByUserAppId(userApp.getId());
         for (CertificateApp cert: certificateAppList) {
             try{
-                if(cert.isRevoked() && cert.getSerialNumber().toString()==certDTO.getSerialNumberSubject())
+                if(cert.isRevoked() && cert.getSerialNumber().toString().equals(certDTO.getSerialNumberSubject()))
                     return true;
             } catch (Exception ex){
                 return true;
@@ -253,9 +253,10 @@ public class CertificateService {
         List<CertificateApp> certificateAppList = certificateAppRepository.findAllByUserAppId(userApp.getId());
         for (CertificateApp cert: certificateAppList) {
             try{
-                if(cert.getSerialNumber().toString()==certDTO.getSerialNumberSubject())
+                if(cert.getSerialNumber().toString().equals(certDTO.getSerialNumberSubject()))
                     cert.setRevoked(true);
-                if(cert.getSerialNumber().toString()==certDTO)
+                if(cert.getSerialNumber().toString().equals(certDTO.getSerialNumberIssuer()))
+                    cert.setRevoked(true);
             } catch (Exception ex){
                 return;
             }
