@@ -10,7 +10,9 @@ import { AppComponent } from './app.component';
 import { LoginPageComponent } from './login-page/login-page.component';
 import { RegistrationPageComponent } from './registration-page/registration-page.component';
 import { CertificateFormComponent } from './certificate-form/certificate-form.component';
+
 import { UserListComponent } from './user-list/user-list.component';
+
 
 @NgModule({
   declarations: [
@@ -19,6 +21,7 @@ import { UserListComponent } from './user-list/user-list.component';
     RegistrationPageComponent,
     CertificateFormComponent,
     UserListComponent
+
   ],
   imports: [
     BrowserModule,

@@ -5,6 +5,7 @@ import { RegistrationPageComponent } from './registration-page/registration-page
 import { CertificateFormComponent } from './certificate-form/certificate-form.component';
 import { UserListComponent } from './user-list/user-list.component';
 
+
 const routes: Routes = [
   { path: 'login', component: LoginPageComponent },
   { path: 'registration', component: RegistrationPageComponent },

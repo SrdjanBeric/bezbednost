@@ -84,6 +84,7 @@ public class CertificateController {
         if(certificateDto == null){
             return null;
         }
+
         return new ResponseEntity<>(certificateDto, HttpStatus.OK);
 
     }
