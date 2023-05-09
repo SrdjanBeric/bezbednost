@@ -40,6 +40,14 @@ public class UserApp implements UserDetails {
     @NotBlank
     private String password;
 
+//    @Column
+//    @NotBlank
+//    private String firstname;
+//
+//    @Column
+//    @NotBlank
+//    private String surname;
+
     @ManyToOne(fetch = FetchType.EAGER)
     private Role role;
 

@@ -1,7 +1,8 @@
 package managementapp.managementapp.controllers;
 
+import managementapp.managementapp.dtos.authentication.LoginRequestDto;
 import managementapp.managementapp.dtos.authentication.RegistrationRequestDto;
-import managementapp.managementapp.services.UserAppService;
+import managementapp.managementapp.services.AuthenticationService;
 import managementapp.managementapp.utils.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,15 +25,26 @@ public class AuthenticationController {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private UserAppService userService;
+    private AuthenticationService authenticationService;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> addUser(@Valid @RequestBody RegistrationRequestDto request) {
+    public ResponseEntity<?> signup(@Valid @RequestBody RegistrationRequestDto request) {
         try{
-            return userService.registerUser(request);
+            return authenticationService.registerUser(request);
         }
         catch (Exception e){
             return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequestDto request) {
+        try{
+            return authenticationService.login(request);
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }
