@@ -1,16 +1,15 @@
 package managementapp.managementapp.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.util.Arrays;
 import java.util.Collection;
 
 @Entity
@@ -18,6 +17,7 @@ import java.util.Collection;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Inheritance(strategy = InheritanceType.JOINED)
 public class UserApp implements UserDetails {
     @Id
@@ -40,6 +40,9 @@ public class UserApp implements UserDetails {
     @NotBlank
     private String password;
 
+    @Column
+    private Boolean active = false;
+
 //    @Column
 //    @NotBlank
 //    private String firstname;
@@ -53,7 +56,7 @@ public class UserApp implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return Arrays.asList(new SimpleGrantedAuthority(this.role.getName()));
     }
 
     @Override
@@ -83,6 +86,6 @@ public class UserApp implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return active;
     }
 }

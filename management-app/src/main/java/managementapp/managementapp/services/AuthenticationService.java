@@ -39,16 +39,18 @@ public class AuthenticationService {
             if(userAppService.userExistsByUsernameOrEmail(registrationRequest.getUsername(), registrationRequest.getEmail())){
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("A user with that username or email already exists.");
             }
-            UserApp userToRegister = new UserApp();
-            userToRegister.setEmail(registrationRequest.getEmail());
-            userToRegister.setUsername(registrationRequest.getUsername());
-            userToRegister.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
-            userToRegister.setRole(roleRepository.findByName(registrationRequest.getRoleName()));
             Role role = roleRepository.findByName(registrationRequest.getRoleName());
             if(role == null){
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("Invalid role name.");
             }
+            UserApp userToRegister = UserApp.builder()
+                    .email(registrationRequest.getEmail())
+                    .username(registrationRequest.getUsername())
+                    .password(passwordEncoder.encode(registrationRequest.getPassword()))
+                    .role(role)
+                    .active(false)
+                    .build();
             switch (role.getName()){
                 case "SOFTWARE_ENGINEER":
                     userAppService.save(new SoftwareEngineer(userToRegister));
@@ -80,7 +82,7 @@ public class AuthenticationService {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             // Kreiraj token za tog korisnika
             UserApp user = (UserApp) authentication.getPrincipal();
-            String jwt = tokenUtils.generateToken(user.getUsername());
+            String jwt = tokenUtils.generateToken(user.getUsername(), user.getRole().getName());
             int expiresIn = tokenUtils.getExpiredIn();
             // Vrati token kao odgovor na uspesnu autentifikaciju
             return ResponseEntity.ok(new UserTokenState(jwt, expiresIn));

@@ -14,6 +14,6 @@ import javax.persistence.Entity;
 public class ProjectManager extends UserApp {
 
     public ProjectManager(UserApp userApp) {
-        super(userApp.getId(), userApp.getUsername(), userApp.getEmail(), userApp.getPassword(), userApp.getRole());
+        super(userApp.getId(), userApp.getUsername(), userApp.getEmail(), userApp.getPassword(), userApp.getActive(), userApp.getRole());
     }
 }
