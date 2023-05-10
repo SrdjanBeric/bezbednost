@@ -1,6 +1,7 @@
 package managementapp.managementapp.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,10 +27,10 @@ public class SoftwareEngineerProject {
     private SoftwareEngineer softwareEngineer;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIncludeProperties({"id", "name"})
     private Project project;
 
     @Column
-    @Lob
     private String workDescription;
 
     // Datum kada je Software engineer poceo da radi na projektu

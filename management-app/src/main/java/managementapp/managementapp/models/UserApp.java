@@ -1,6 +1,7 @@
 package managementapp.managementapp.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,6 +20,7 @@ import java.util.Collection;
 @AllArgsConstructor
 @Builder
 @Inheritance(strategy = InheritanceType.JOINED)
+@JsonIgnoreProperties({"accountNonExpired", "credentialsNonExpired", "accountNonLocked", "authorities"})
 public class UserApp implements UserDetails {
     @Id
     @SequenceGenerator(name = "userAppSeqGen", sequenceName = "userAppSeq", initialValue = 1, allocationSize = 1)
@@ -42,14 +44,6 @@ public class UserApp implements UserDetails {
 
     @Column
     private Boolean active = false;
-
-//    @Column
-//    @NotBlank
-//    private String firstname;
-//
-//    @Column
-//    @NotBlank
-//    private String surname;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Role role;

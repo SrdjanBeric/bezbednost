@@ -1,6 +1,7 @@
 package managementapp.managementapp.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -39,4 +42,8 @@ public class Project {
 
     @ManyToOne
     private ProjectManager projectManager;
+
+    @OneToMany(mappedBy = "project", fetch = FetchType.EAGER)
+    @JsonIgnoreProperties("project")
+    private Set<SoftwareEngineerProject> taskDescriptions = new HashSet<>();
 }

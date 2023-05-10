@@ -13,7 +13,6 @@ public class AdminController {
     @Autowired
     private AdminService adminService;
 
-
     @GetMapping("/usersToActivate")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> getUsersToActivate(){

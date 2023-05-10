@@ -1,6 +1,5 @@
 package managementapp.managementapp.services;
 
-import managementapp.managementapp.dtos.authentication.RegistrationRequestDto;
 import managementapp.managementapp.models.*;
 import managementapp.managementapp.repositories.RoleRepository;
 import managementapp.managementapp.repositories.UserAppRepository;
@@ -12,7 +11,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
+
+import java.util.List;
 
 @Service
 public class UserAppService implements UserDetailsService {
@@ -24,6 +24,11 @@ public class UserAppService implements UserDetailsService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    public ResponseEntity<?> getAllUsers(){
+        List<UserApp> allUsers = userAppRepository.findAll();
+        return new ResponseEntity<>(allUsers, HttpStatus.OK);
+    }
 
     public UserApp save(UserApp userApp){
         return userAppRepository.save(userApp);

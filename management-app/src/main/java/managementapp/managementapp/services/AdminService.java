@@ -1,6 +1,5 @@
 package managementapp.managementapp.services;
 
-import managementapp.managementapp.dtos.common.UserAppDto;
 import managementapp.managementapp.models.UserApp;
 import managementapp.managementapp.repositories.AdminRepository;
 import managementapp.managementapp.repositories.UserAppRepository;
@@ -9,9 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AdminService {
@@ -23,18 +20,7 @@ public class AdminService {
     public ResponseEntity<?> getUsersToActivate(){
         try{
             List<UserApp> usersToActivate = userAppRepository.findUserAppsByActive(false);
-            List<UserAppDto> userAppDtoList = new ArrayList<>();
-            for (UserApp userApp: usersToActivate) {
-                UserAppDto userAppDto = UserAppDto.builder()
-                        .id(userApp.getId())
-                        .email(userApp.getEmail())
-                        .username(userApp.getUsername())
-                        .active(userApp.getActive())
-                        .roleName(userApp.getRole().getName())
-                        .build();
-                userAppDtoList.add(userAppDto);
-            }
-            return new ResponseEntity<>(userAppDtoList, HttpStatus.OK);
+            return new ResponseEntity<>(usersToActivate, HttpStatus.OK);
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("An error occurred while getting all users to activate.");
