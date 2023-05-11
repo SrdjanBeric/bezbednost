@@ -2,10 +2,7 @@ package managementapp.managementapp.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -16,6 +13,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class SoftwareEngineerProject {
     @Id
     @SequenceGenerator(name = "softwareEngineerProjectSeqGen", sequenceName = "softwareEngineerProjectSeqGen", initialValue = 1, allocationSize = 1)
