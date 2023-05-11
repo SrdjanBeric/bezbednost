@@ -1,5 +1,6 @@
 package managementapp.managementapp.services;
 
+import managementapp.managementapp.models.RegistrationVerification;
 import managementapp.managementapp.models.UserApp;
 import managementapp.managementapp.repositories.AdminRepository;
 import managementapp.managementapp.repositories.UserAppRepository;
@@ -16,6 +17,8 @@ public class AdminService {
     private AdminRepository adminRepository;
     @Autowired
     private UserAppRepository userAppRepository;
+    @Autowired
+    private RegistrationVerificationService registrationVerificationService;
 
     public ResponseEntity<?> getUsersToActivate(){
         try{
@@ -34,8 +37,8 @@ public class AdminService {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("User with id: " + userId + " does not exist");
             }
-            userApp.setActive(true);
-            userAppRepository.save(userApp);
+            RegistrationVerification verification = registrationVerificationService.createRegistrationVerification(userApp);
+            // TODO send verification link to the email address
             return new ResponseEntity<>(HttpStatus.OK);
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

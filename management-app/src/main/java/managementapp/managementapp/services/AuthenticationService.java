@@ -19,6 +19,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class AuthenticationService {
     @Autowired
@@ -33,6 +35,8 @@ public class AuthenticationService {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private TokenUtils tokenUtils;
+    @Autowired
+    private RegistrationVerificationService registrationVerificationService;
 
     public ResponseEntity<?> registerUser(RegistrationRequestDto registrationRequest){
         try{
@@ -91,5 +95,14 @@ public class AuthenticationService {
                     .body("Bad credentials.");
         }
 
+    }
+
+    public ResponseEntity<?> activate(UUID token){
+        try{
+            return registrationVerificationService.activate(token);
+        }catch (AuthenticationException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred during activation of account.");
+        }
     }
 }
