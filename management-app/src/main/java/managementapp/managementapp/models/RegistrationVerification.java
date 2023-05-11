@@ -19,6 +19,8 @@ import java.util.UUID;
 public class RegistrationVerification {
     @Id
     private UUID id;
+    @Column
+    private String hmacValue;
     @ManyToOne
     private UserApp userApp;
     @Column

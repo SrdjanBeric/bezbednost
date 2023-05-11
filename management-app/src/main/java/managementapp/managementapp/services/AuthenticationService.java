@@ -7,7 +7,6 @@ import managementapp.managementapp.models.*;
 import managementapp.managementapp.repositories.RoleRepository;
 import managementapp.managementapp.repositories.UserAppRepository;
 import managementapp.managementapp.utils.TokenUtils;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -95,6 +94,11 @@ public class AuthenticationService {
                     .body("Bad credentials.");
         }
 
+    }
+
+    public void sendVerificationEmail(UserApp userApp){
+        UUID verificationToken = registrationVerificationService.generateActivationToken(userApp);
+        //TODO send this token via email
     }
 
     public ResponseEntity<?> activate(UUID token){

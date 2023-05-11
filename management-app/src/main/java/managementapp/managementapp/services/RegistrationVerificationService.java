@@ -4,6 +4,7 @@ import managementapp.managementapp.models.RegistrationVerification;
 import managementapp.managementapp.models.UserApp;
 import managementapp.managementapp.repositories.RegistrationVerificationRepository;
 import managementapp.managementapp.repositories.UserAppRepository;
+import managementapp.managementapp.security.HashingAlogorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,20 +20,22 @@ public class RegistrationVerificationService {
     @Autowired
     private UserAppRepository userAppRepository;
 
-    public RegistrationVerification createRegistrationVerification(UserApp userToRegister){
+    public UUID generateActivationToken(UserApp userToRegister){
+        UUID token = UUID.randomUUID();
         RegistrationVerification registrationVerification = RegistrationVerification.builder()
                 .id(UUID.randomUUID())
+                .hmacValue(HashingAlogorithm.calculateHmac(token.toString()))
                 .userApp(userToRegister)
                 .dateTimeStart(LocalDateTime.now())
                 .dateTimeEnd(LocalDateTime.now().plusDays(1))
                 .activated(false)
                 .build();
-        return registrationVerificationRepository.save(registrationVerification);
+        return token;
     }
 
 
     public ResponseEntity<?> activate(UUID token){
-        RegistrationVerification registrationVerification = registrationVerificationRepository.findById(token).orElse(null);
+        RegistrationVerification registrationVerification = registrationVerificationRepository.findByHmacValue(HashingAlogorithm.calculateHmac(token.toString()));
         if(registrationVerification == null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Invalid token");

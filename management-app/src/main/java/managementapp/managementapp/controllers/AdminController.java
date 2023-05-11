@@ -27,7 +27,7 @@ public class AdminController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> activateUser(@PathVariable Long userId){
         try{
-            return adminService.activateUser(userId);
+            return adminService.approveRegistrationRequest(userId);
         }catch (Exception e){
             return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }

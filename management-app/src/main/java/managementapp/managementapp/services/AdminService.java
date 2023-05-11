@@ -19,6 +19,8 @@ public class AdminService {
     private UserAppRepository userAppRepository;
     @Autowired
     private RegistrationVerificationService registrationVerificationService;
+    @Autowired
+    private AuthenticationService authenticationService;
 
     public ResponseEntity<?> getUsersToActivate(){
         try{
@@ -30,15 +32,14 @@ public class AdminService {
         }
     }
 
-    public ResponseEntity<?> activateUser(Long userId){
+    public ResponseEntity<?> approveRegistrationRequest(Long userId){
         try{
             UserApp userApp = userAppRepository.findById(userId).orElse(null);
             if(userApp == null){
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("User with id: " + userId + " does not exist");
             }
-            RegistrationVerification verification = registrationVerificationService.createRegistrationVerification(userApp);
-            // TODO send verification link to the email address
+            authenticationService.sendVerificationEmail(userApp);
             return new ResponseEntity<>(HttpStatus.OK);
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
