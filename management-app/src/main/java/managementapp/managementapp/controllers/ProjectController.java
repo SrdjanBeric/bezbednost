@@ -34,4 +34,14 @@ public class ProjectController {
             return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @DeleteMapping("{projectId}/removeEngineer/{softwareEngineerId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'PROJECT_MANAGER')")
+    public ResponseEntity<?> removeEngineer(@PathVariable Long projectId, @PathVariable Long softwareEngineerId){
+        try{
+            return projectService.removeEngineer(projectId, softwareEngineerId);
+        }catch (Exception e){
+            return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

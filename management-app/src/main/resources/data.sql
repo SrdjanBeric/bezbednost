@@ -24,4 +24,4 @@ INSERT INTO project(id, name, start_date, end_date, project_manager_id) VALUES (
 INSERT INTO project(id, name, start_date, end_date, project_manager_id) VALUES (nextval('project_seq_gen'), 'project2', '01-01-2023', '01-01-2024', 5);
 
 --Software engineer projects
-INSERT INTO software_engineer_project(id, software_engineer_id, project_id, work_description, start_date, end_date) VALUES (nextval('software_engineer_project_seq_gen'), 3, 1, 'Development', '01-01-2022', '01-01-2023');
+INSERT INTO software_engineer_project(id, software_engineer_id, project_id, work_description, start_date, end_date, active) VALUES (nextval('software_engineer_project_seq_gen'), 3, 1, 'Development', '01-01-2022', '01-01-2023', true);

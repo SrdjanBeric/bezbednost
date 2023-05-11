@@ -79,6 +79,37 @@ public class ProjectService {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    public ResponseEntity<?> removeEngineer(Long projectId, Long softwareEngineerId){
+        try{
+            UserApp loggedInUser = userAppRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+            SoftwareEngineer engineerToRemove = softwareEngineerRepository.findById(softwareEngineerId).orElse(null);
+            if(engineerToRemove == null){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Software engineer with id " + softwareEngineerId + " does not exist");
+            }
+            Project project = projectRepository.findById(projectId).orElse(null);
+            if(project == null){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Project with id " + projectId + " does not exist");
+            }
+            if(!isManagerOnProject(project, loggedInUser)){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("You are not allowed to remove engineers on project with id " + projectId);
+            }
+            SoftwareEngineerProject softwareEngineerProject = softwareEngineerProjectRepository.findByProjectIdAndSoftwareEngineerId(projectId, softwareEngineerId);
+            if(softwareEngineerProject == null){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Engineer does not work on this project.");
+            }
+            softwareEngineerProject.setActive(false);
+            softwareEngineerProjectRepository.save(softwareEngineerProject);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred while removing engineer from project.");
+        }
+    }
+
     private boolean isManagerOnProject(Project project, UserApp userApp){
         if(userApp.getRole().getName().equals("ADMIN")){
             return true;

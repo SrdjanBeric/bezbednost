@@ -42,4 +42,7 @@ public class SoftwareEngineerProject {
     @DateTimeFormat(pattern = "dd-MM-yyyy", iso = DateTimeFormat.ISO.DATE_TIME)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date endDate;
+
+    @Column
+    private Boolean active;
 }
