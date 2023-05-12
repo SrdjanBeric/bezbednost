@@ -1,8 +1,8 @@
 package managementapp.managementapp.services;
 
-import managementapp.managementapp.models.RegistrationVerification;
+import managementapp.managementapp.models.ActivationToken;
 import managementapp.managementapp.models.UserApp;
-import managementapp.managementapp.repositories.RegistrationVerificationRepository;
+import managementapp.managementapp.repositories.ActivationTokenRepository;
 import managementapp.managementapp.repositories.UserAppRepository;
 import managementapp.managementapp.security.HashingAlogorithm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,15 +14,15 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
-public class RegistrationVerificationService {
+public class ActivationTokenService {
     @Autowired
-    private RegistrationVerificationRepository registrationVerificationRepository;
+    private ActivationTokenRepository activationTokenRepository;
     @Autowired
     private UserAppRepository userAppRepository;
 
     public UUID generateActivationToken(UserApp userToRegister){
         UUID token = UUID.randomUUID();
-        RegistrationVerification registrationVerification = RegistrationVerification.builder()
+        ActivationToken activationToken = ActivationToken.builder()
                 .id(UUID.randomUUID())
                 .hmacValue(HashingAlogorithm.calculateHmac(token.toString()))
                 .userApp(userToRegister)
@@ -35,32 +35,32 @@ public class RegistrationVerificationService {
 
 
     public ResponseEntity<?> activate(UUID token){
-        RegistrationVerification registrationVerification = registrationVerificationRepository.findByHmacValue(HashingAlogorithm.calculateHmac(token.toString()));
-        if(registrationVerification == null){
+        ActivationToken activationToken = activationTokenRepository.findByHmacValue(HashingAlogorithm.calculateHmac(token.toString()));
+        if(activationToken == null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Invalid token");
         }
-        if(registrationVerification.getActivated() == true){
+        if(activationToken.getActivated() == true){
             return ResponseEntity.status(HttpStatus.OK)
                     .body("Account is already active.");
         }
-        if(isExpired(registrationVerification)){
+        if(isExpired(activationToken)){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Token has expired");
         }
-        UserApp userApp = userAppRepository.findById(registrationVerification.getUserApp().getId()).orElse(null);
+        UserApp userApp = userAppRepository.findById(activationToken.getUserApp().getId()).orElse(null);
         if(userApp == null){
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body("User does not exist.");
         }
         userApp.setActive(true);
         userAppRepository.save(userApp);
-        registrationVerification.setActivated(true);
-        registrationVerificationRepository.save(registrationVerification);
+        activationToken.setActivated(true);
+        activationTokenRepository.save(activationToken);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    private boolean isExpired(RegistrationVerification registrationVerification){
-        return LocalDateTime.now().isAfter(registrationVerification.getDateTimeEnd());
+    private boolean isExpired(ActivationToken activationToken){
+        return LocalDateTime.now().isAfter(activationToken.getDateTimeEnd());
     }
 }

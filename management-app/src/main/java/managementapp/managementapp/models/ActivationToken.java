@@ -16,7 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RegistrationVerification {
+public class ActivationToken {
     @Id
     private UUID id;
     @Column

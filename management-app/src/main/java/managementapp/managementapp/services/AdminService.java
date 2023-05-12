@@ -1,6 +1,5 @@
 package managementapp.managementapp.services;
 
-import managementapp.managementapp.models.RegistrationVerification;
 import managementapp.managementapp.models.UserApp;
 import managementapp.managementapp.repositories.AdminRepository;
 import managementapp.managementapp.repositories.UserAppRepository;
@@ -18,7 +17,7 @@ public class AdminService {
     @Autowired
     private UserAppRepository userAppRepository;
     @Autowired
-    private RegistrationVerificationService registrationVerificationService;
+    private ActivationTokenService activationTokenService;
     @Autowired
     private AuthenticationService authenticationService;
 

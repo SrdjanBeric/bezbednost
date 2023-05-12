@@ -35,7 +35,7 @@ public class AuthenticationService {
     @Autowired
     private TokenUtils tokenUtils;
     @Autowired
-    private RegistrationVerificationService registrationVerificationService;
+    private ActivationTokenService activationTokenService;
 
     public ResponseEntity<?> registerUser(RegistrationRequestDto registrationRequest){
         try{
@@ -97,13 +97,13 @@ public class AuthenticationService {
     }
 
     public void sendVerificationEmail(UserApp userApp){
-        UUID verificationToken = registrationVerificationService.generateActivationToken(userApp);
+        UUID verificationToken = activationTokenService.generateActivationToken(userApp);
         //TODO send this token via email
     }
 
     public ResponseEntity<?> activate(UUID token){
         try{
-            return registrationVerificationService.activate(token);
+            return activationTokenService.activate(token);
         }catch (AuthenticationException e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("An error occurred during activation of account.");
@@ -113,7 +113,6 @@ public class AuthenticationService {
     public ResponseEntity<?> loginViaToken(UUID token){
         try{
             return ResponseEntity.status(HttpStatus.OK).body(token);
-//            return registrationVerificationService.activate(token);
         }catch (AuthenticationException e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("An error occurred during login via token.");
