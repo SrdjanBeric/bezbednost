@@ -37,7 +37,11 @@ public class AdminService {
             UserApp userApp = userAppRepository.findById(userId).orElse(null);
             if(userApp == null){
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body("User with id: " + userId + " does not exist");
+                        .body("User with id: " + userId + " does not exist.");
+            }
+            if(userApp.getActive()){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("User with id: " + userId + " is already active.");
             }
             authenticationService.sendVerificationEmail(userApp);
             return new ResponseEntity<>(HttpStatus.OK);

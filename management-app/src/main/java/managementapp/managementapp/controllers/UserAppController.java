@@ -22,7 +22,7 @@ public class UserAppController {
     }
 
     @GetMapping("/all")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'HUMAN_RESOURCES_MANAGER')")
     public ResponseEntity<?> allUsers(){
         try{
             return userAppService.getAllUsers();

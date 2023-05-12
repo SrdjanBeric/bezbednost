@@ -109,4 +109,14 @@ public class AuthenticationService {
                     .body("An error occurred during activation of account.");
         }
     }
+
+    public ResponseEntity<?> loginViaToken(UUID token){
+        try{
+            return ResponseEntity.status(HttpStatus.OK).body(token);
+//            return registrationVerificationService.activate(token);
+        }catch (AuthenticationException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred during login via token.");
+        }
+    }
 }

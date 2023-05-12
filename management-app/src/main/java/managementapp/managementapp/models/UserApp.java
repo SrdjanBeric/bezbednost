@@ -10,6 +10,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -30,6 +32,8 @@ public class UserApp implements UserDetails {
 
     @Column(unique = true, nullable = false)
     @NotBlank
+    @Pattern(regexp = "^[a-zA-Z0-9_]*$", message = "Username can only contain letters, digits and underscore")
+    @Size(min = 4, message = "Username must be at least 4 characters long")
     private String username;
 
     @Column(unique = true, nullable = false)
@@ -40,6 +44,8 @@ public class UserApp implements UserDetails {
     @JsonIgnore
     @Column
     @NotBlank
+    @Size(min = 8, message = "Password must be at least 8 characters long")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$", message = "Password must contain at least one lowercase letter, one uppercase letter and one digit")
     private String password;
 
     @Column

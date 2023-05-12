@@ -33,21 +33,12 @@ public class ProjectService {
     public ResponseEntity<?> getAllProjects(){
         UserApp loggedInUser = userAppRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         List<Project> projects = new ArrayList<>();
-        switch (loggedInUser.getRole().getName()){
-            case "ADMIN":
-                projects = projectRepository.findAll();
-                break;
-            case "SOFTWARE_ENGINEER":
-                projects = projectRepository.findAllBySoftwareEngineerId(loggedInUser.getId());
-                break;
-            case "PROJECT_MANAGER":
-                projects = projectRepository.findAllByProjectManagerId(loggedInUser.getId());
-                break;
-            case "HUMAN_RESOURCES_MANAGER":
-                projects = projectRepository.findAll();
-                break;
-            default:
-                break;
+        switch (loggedInUser.getRole().getName()) {
+            case "ADMIN", "HUMAN_RESOURCES_MANAGER" -> projects = projectRepository.findAll();
+            case "SOFTWARE_ENGINEER" -> projects = projectRepository.findAllBySoftwareEngineerId(loggedInUser.getId());
+            case "PROJECT_MANAGER" -> projects = projectRepository.findAllByProjectManagerId(loggedInUser.getId());
+            default -> {
+            }
         }
         return new ResponseEntity<>(projects, HttpStatus.OK);
     }
