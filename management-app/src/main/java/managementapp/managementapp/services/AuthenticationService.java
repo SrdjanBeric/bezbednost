@@ -115,17 +115,19 @@ public class AuthenticationService {
             }
             UUID loginToken = loginTokenService.generateLoginToken(userApp);
             //TODO send this token via email
+            String loginLink = "http://localhost:8081/auth/login?token="+loginToken;
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(loginToken);
+                    .body(loginLink);
         }catch (AuthenticationException e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("An error occurred while trying to send a token for login.");
         }
     }
 
-    public void sendVerificationEmail(UserApp userApp){
+    public String sendVerificationEmail(UserApp userApp){
         UUID verificationToken = activationTokenService.generateActivationToken(userApp);
         //TODO send this token via email
+        return "http://localhost:8081/auth/activate?token="+verificationToken;
     }
 
     public ResponseEntity<?> activate(UUID token){
