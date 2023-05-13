@@ -58,6 +58,16 @@ public class AuthenticationController {
         }
     }
 
+    @GetMapping("/loginViaEmail/{email}")
+    public ResponseEntity<?> loginViaEmail(@PathVariable String email){
+        try{
+            return authenticationService.sendLoginTokenToEmail(email);
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping("/login")
     public ResponseEntity<?> loginViaToken(@RequestParam("token") UUID token)
     {

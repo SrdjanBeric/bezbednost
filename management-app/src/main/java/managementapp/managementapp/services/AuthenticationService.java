@@ -6,6 +6,7 @@ import managementapp.managementapp.dtos.authentication.UserTokenState;
 import managementapp.managementapp.models.*;
 import managementapp.managementapp.repositories.RoleRepository;
 import managementapp.managementapp.repositories.UserAppRepository;
+import managementapp.managementapp.security.TokenBasedAuthentication;
 import managementapp.managementapp.utils.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +39,10 @@ public class AuthenticationService {
     private TokenUtils tokenUtils;
     @Autowired
     private ActivationTokenService activationTokenService;
+    @Autowired
+    private LoginTokenService loginTokenService;
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     public ResponseEntity<?> registerUser(RegistrationRequestDto registrationRequest){
         try{
@@ -93,7 +100,27 @@ public class AuthenticationService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Bad credentials.");
         }
+    }
 
+    public ResponseEntity<?> sendLoginTokenToEmail(String email){
+        try{
+            UserApp userApp = userAppRepository.findByEmail(email);
+            if(userApp == null){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("User with does not exist with email: " + email);
+            }
+            if(!userApp.getActive()){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Account with this email is not active.");
+            }
+            UUID loginToken = loginTokenService.generateLoginToken(userApp);
+            //TODO send this token via email
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(loginToken);
+        }catch (AuthenticationException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred while trying to send a token for login.");
+        }
     }
 
     public void sendVerificationEmail(UserApp userApp){
@@ -112,7 +139,17 @@ public class AuthenticationService {
 
     public ResponseEntity<?> loginViaToken(UUID token){
         try{
-            return ResponseEntity.status(HttpStatus.OK).body(token);
+            UserApp userToLogin = loginTokenService.validateTokenAndGetUser(token);
+            if(userToLogin == null){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Token is not valid.");
+            }
+            UserDetails userDetails = userDetailsService.loadUserByUsername(userToLogin.getUsername());
+            TokenBasedAuthentication authentication = new TokenBasedAuthentication(userDetails);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            UserApp user = (UserApp) authentication.getPrincipal();
+            String jwt = tokenUtils.generateToken(user.getUsername(), user.getRole().getName());
+            int expiresIn = tokenUtils.getExpiredIn();
+            return ResponseEntity.ok(new UserTokenState(jwt, expiresIn));
         }catch (AuthenticationException e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("An error occurred during login via token.");

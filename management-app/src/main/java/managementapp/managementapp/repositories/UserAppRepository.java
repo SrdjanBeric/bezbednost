@@ -12,5 +12,7 @@ public interface UserAppRepository extends JpaRepository<UserApp, Long> {
 
     public boolean existsByUsernameOrEmail(String username, String email);
 
+    public UserApp findByEmail(String email);
+
     public List<UserApp> findUserAppsByActive(Boolean active);
 }

@@ -30,6 +30,7 @@ public class ActivationTokenService {
                 .dateTimeEnd(LocalDateTime.now().plusDays(1))
                 .activated(false)
                 .build();
+        activationTokenRepository.save(activationToken);
         return token;
     }
 
@@ -40,11 +41,11 @@ public class ActivationTokenService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Invalid token");
         }
-        if(activationToken.getActivated() == true){
+        if(activationToken.getActivated()){
             return ResponseEntity.status(HttpStatus.OK)
                     .body("Account is already active.");
         }
-        if(isExpired(activationToken)){
+        if(activationToken.isExpired()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Token has expired");
         }
