@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <main class="main-container">
+      <div class="registration-form">
+        <h1>Welcome to the App</h1>
+        <form (ngSubmit)="submitForm(form)" #form="ngForm">
+          <input
+            type="text"
+            placeholder="Enter your First Name"
+            #firstname="ngModel"
+            name="firstname"
+            required
+            ngModel
+          />
+
+          <input
+            type="text"
+            placeholder="Enter your Last Name"
+            #lastname="ngModel"
+            name="lastname"
+            required
+            ngModel
+          />
+          <input
+            type="text"
+            placeholder="Password"
+            name="password"
+            required
+            ngModel
+            #password="ngModel"
+          />
+          <input
+            class="aba"
+            type="text"
+            placeholder="email"
+            name="email"
+            required
+            ngModel
+            #email="ngModel"
+          />
+          <input
+            type="text"
+            placeholder="adress"
+            name="adress"
+            required
+            ngModel
+            #adress="ngModel"
+          />
+
+          <input
+            type="text"
+            placeholder="city"
+            name="city"
+            required
+            ngModel
+            #city="ngModel"
+          />
+
+          <input
+            type="text"
+            placeholder="country"
+            name="country"
+            required
+            ngModel
+            #country="ngModel"
+          />
+
+          <input
+            type="text"
+            placeholder="phone"
+            name="phone"
+            required
+            ngModel
+            #phone="ngModel"
+          />
+
+          <!--
+          <label for="Role">Role</label>
+          <select [(ngModel)]="selectedRole" name="role">
+            <option *ngFor="let role of roles" [value]="role">
+              {{ role }}
+            </option>
+          </select>
+          -->
+          <button class="main-button" type="submit">Register</button>
+          <div class="bottom-div">
+            <p>
+              Already have an account?
+              <button
+                class="secondary-button"
+                routerLink="/login-pass"
+                type="submit"
+              >
+                Sign in with pass
+              </button>
+            </p>
+            <button
+              class="secondary-button"
+              routerLink="/login-email"
+              type="submit"
+            >
+              Sign in with email
+            </button>
+          </div>
+        </form>
+      </div>
+    </main>
+  </body>
+</html>
