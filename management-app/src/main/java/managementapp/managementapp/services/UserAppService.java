@@ -30,6 +30,19 @@ public class UserAppService implements UserDetailsService {
         return new ResponseEntity<>(allUsers, HttpStatus.OK);
     }
 
+    public ResponseEntity<?> getById(Long userId){
+        UserApp userApp = userAppRepository.findById(userId).orElse(null);
+        if(userApp == null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("User with id '" + userId + "' does not exist.");
+        }
+        if(!userApp.getActive()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("User with id '" + userId + "' is not active.");
+        }
+        return new ResponseEntity<>(userApp, HttpStatus.OK);
+    }
+
     public UserApp save(UserApp userApp){
         return userAppRepository.save(userApp);
     }
