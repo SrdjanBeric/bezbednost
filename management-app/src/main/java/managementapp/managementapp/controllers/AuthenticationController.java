@@ -1,6 +1,7 @@
 package managementapp.managementapp.controllers;
 
 import managementapp.managementapp.dtos.authentication.LoginRequestDto;
+import managementapp.managementapp.dtos.authentication.RefreshTokenRequestDto;
 import managementapp.managementapp.dtos.authentication.RegistrationRequestDto;
 import managementapp.managementapp.services.AuthenticationService;
 import managementapp.managementapp.utils.TokenUtils;
@@ -48,6 +49,16 @@ public class AuthenticationController {
         }
     }
 
+    @PostMapping("/refreshToken")
+    public ResponseEntity<?> refreshToken(@Valid @RequestBody RefreshTokenRequestDto refreshToken){
+        try{
+            return authenticationService.refreshToken(refreshToken.getRefreshToken());
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping("/activate")
     public ResponseEntity<?> activate(@RequestParam("token") UUID token){
         try{
@@ -78,5 +89,4 @@ public class AuthenticationController {
             return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 }

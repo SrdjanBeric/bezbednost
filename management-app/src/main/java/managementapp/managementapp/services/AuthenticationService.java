@@ -43,6 +43,8 @@ public class AuthenticationService {
     private LoginTokenService loginTokenService;
     @Autowired
     private UserDetailsService userDetailsService;
+    @Autowired
+    private RefreshTokenService refreshTokenService;
 
     public ResponseEntity<?> registerUser(RegistrationRequestDto registrationRequest){
         try{
@@ -94,11 +96,31 @@ public class AuthenticationService {
             UserApp user = (UserApp) authentication.getPrincipal();
             String jwt = tokenUtils.generateToken(user.getUsername(), user.getRole().getName());
             int expiresIn = tokenUtils.getExpiredIn();
+            UUID refreshToken = refreshTokenService.generateRefreshToken(user);
             // Vrati token kao odgovor na uspesnu autentifikaciju
-            return ResponseEntity.ok(new UserTokenState(jwt, expiresIn));
+            return ResponseEntity.ok(new UserTokenState(jwt, refreshToken.toString(), expiresIn));
         }catch (AuthenticationException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Bad credentials.");
+        }
+    }
+
+    public ResponseEntity<?> refreshToken(UUID refreshToken){
+        try{
+            UserApp userToLogin = refreshTokenService.validateTokenAndGetUser(refreshToken);
+            if(userToLogin == null){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Token is not valid.");
+            }
+            UserDetails userDetails = userDetailsService.loadUserByUsername(userToLogin.getUsername());
+            TokenBasedAuthentication authentication = new TokenBasedAuthentication(userDetails);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            UserApp user = (UserApp) authentication.getPrincipal();
+            String jwt = tokenUtils.generateToken(user.getUsername(), user.getRole().getName());
+            int expiresIn = tokenUtils.getExpiredIn();
+            return ResponseEntity.ok(new UserTokenState(jwt, refreshToken.toString(), expiresIn));
+        }catch (AuthenticationException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred while creating new access token.");
         }
     }
 
@@ -115,17 +137,19 @@ public class AuthenticationService {
             }
             UUID loginToken = loginTokenService.generateLoginToken(userApp);
             //TODO send this token via email
+            String loginLink = "http://localhost:8081/auth/login?token="+loginToken;
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(loginToken);
+                    .body(loginLink);
         }catch (AuthenticationException e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("An error occurred while trying to send a token for login.");
         }
     }
 
-    public void sendVerificationEmail(UserApp userApp){
+    public String sendVerificationEmail(UserApp userApp){
         UUID verificationToken = activationTokenService.generateActivationToken(userApp);
         //TODO send this token via email
+        return "http://localhost:8081/auth/activate?token="+verificationToken;
     }
 
     public ResponseEntity<?> activate(UUID token){
@@ -149,7 +173,8 @@ public class AuthenticationService {
             UserApp user = (UserApp) authentication.getPrincipal();
             String jwt = tokenUtils.generateToken(user.getUsername(), user.getRole().getName());
             int expiresIn = tokenUtils.getExpiredIn();
-            return ResponseEntity.ok(new UserTokenState(jwt, expiresIn));
+            UUID refreshToken = refreshTokenService.generateRefreshToken(user);
+            return ResponseEntity.ok(new UserTokenState(jwt, refreshToken.toString(), expiresIn));
         }catch (AuthenticationException e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("An error occurred during login via token.");
