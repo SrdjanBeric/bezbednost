@@ -8,18 +8,32 @@ import { tap } from 'rxjs/operators';
 })
 export class AuthService {
   private loginUrl = 'http://localhost:8081/auth/login'; // ?
+  private loginUrlEmail = 'http://localhost:8081/auth/loginViaEmail';
 
   constructor(private http: HttpClient) {}
 
-  //Treba ovo da se promeni da imamo 2 funkcije jedna koja zahteva samo email druga koja zahteva password i msm da ce i u back-u ovo mroati da se popravi!
+  signup(registrationRequest: any): Observable<any> {
+    const url = 'http://localhost:8081/auth/signup';
+    return this.http.post(url, registrationRequest);
+  }
 
   login(username: string, password: string): Observable<any> {
     return this.http.post<any>(this.loginUrl, { username, password }).pipe(
       tap((response) => {
         // Save the JWT token and expiration date in local storage
-        const expiresAt = new Date(response.expiresIn * 1000 + Date.now());
+        console.log(response);
+
         localStorage.setItem('access_token', response.accessToken);
-        localStorage.setItem('expires_at', JSON.stringify(expiresAt));
+        localStorage.setItem('refresh_token', response.accessToken);
+      })
+    );
+  }
+
+  loginViaEmail(email: string): Observable<any> {
+    console.log(this.loginUrlEmail);
+    return this.http.get<any>(this.loginUrlEmail + '/' + email).pipe(
+      tap((response) => {
+        console.log(response);
       })
     );
   }

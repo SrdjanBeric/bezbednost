@@ -14,8 +14,8 @@
           <input
             type="text"
             placeholder="Enter your First Name"
-            #firstname="ngModel"
-            name="firstname"
+            #username="ngModel"
+            name="username"
             required
             ngModel
           />
@@ -33,8 +33,19 @@
             placeholder="Password"
             name="password"
             required
+            minlength="8"
             ngModel
             #password="ngModel"
+          />
+
+          <input
+            type="password"
+            placeholder="Confirm your Password"
+            name="confirmPassword"
+            minlength="8"
+            required
+            ngModel
+            #confirmPassword="ngModel"
           />
           <input
             class="aba"
@@ -81,14 +92,13 @@
             #phone="ngModel"
           />
 
-          <!--
-          <label for="Role">Role</label>
-          <select [(ngModel)]="selectedRole" name="role">
-            <option *ngFor="let role of roles" [value]="role">
-              {{ role }}
+          <select name="roleName" ngModel required #roleName="ngModel">
+            <option value="SOFTWARE_ENGINEER">SOFTWARE ENGINEER</option>
+            <option value="PROJECT_MANAGER">PROJECT MANAGER</option>
+            <option value="HUMAN_RESOURCES_MANAGER">
+              HUMAN RESOURCES MANAGER
             </option>
           </select>
-          -->
           <button class="main-button" type="submit">Register</button>
           <div class="bottom-div">
             <p>
