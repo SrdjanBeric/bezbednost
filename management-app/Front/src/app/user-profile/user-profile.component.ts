@@ -22,10 +22,11 @@ export class UserProfileComponent {
     });
   }
   goToEditPage() {
-    this.router.navigate(['/user-profile/{id}', { id: this.route.snapshot.paramMap.get('id')}]);
+    this.router.navigate(['/edit-user-profile/{id}', { id: this.route.snapshot.paramMap.get('id')}]);
   }
   goToCV()
   {
+    this.router.navigate(['/user-cv/{id}', { id: this.route.snapshot.paramMap.get('id')}]);
 
   }
   viewProjects()
