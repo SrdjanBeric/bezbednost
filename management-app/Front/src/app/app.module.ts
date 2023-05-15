@@ -9,11 +9,19 @@ import { RouterModule, Routes } from '@angular/router';
 import { LoginPasswordPageComponent } from './login-password-page/login-password-page.component';
 import { LoginEmailPageComponent } from './login-email-page/login-email-page.component';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { AdminPageComponent } from './admin-page/admin-page.component';
+import { AuthGuard } from './service/auth.guard';
 
 const appRoutes: Routes = [
   { path: 'registration', component: RegistrationPageComponent },
   { path: 'login-pass', component: LoginPasswordPageComponent },
   { path: 'login-email', component: LoginEmailPageComponent },
+  {
+    path: 'admin',
+    component: AdminPageComponent,
+    canActivate: [AuthGuard],
+    data: { allowedRoles: ['ADMIN'] },
+  },
 ];
 
 @NgModule({
@@ -22,6 +30,7 @@ const appRoutes: Routes = [
     RegistrationPageComponent,
     LoginPasswordPageComponent,
     LoginEmailPageComponent,
+    AdminPageComponent,
   ],
   imports: [
     BrowserModule,
