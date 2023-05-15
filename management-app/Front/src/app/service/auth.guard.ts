@@ -18,14 +18,14 @@ export class AuthGuard implements CanActivate {
     state: RouterStateSnapshot
   ): boolean {
     const allowedRoles = route.data.allowedRoles;
-    console.log(`dozvoljenje role` + allowedRoles);
+
     const userRole = this.authService.getRole();
     console.log(`User Rola` + userRole);
 
     if (allowedRoles.includes(userRole)) {
       return true; // Allow access to the route
     } else {
-      this.router.navigate(['/login']); // Redirect to login page or another page for unauthorized users
+      this.router.navigate(['/login-email']); // Redirect to login page or another page for unauthorized users
       return false; // Deny access to the route
     }
   }

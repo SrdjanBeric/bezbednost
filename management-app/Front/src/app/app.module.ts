@@ -11,6 +11,7 @@ import { LoginEmailPageComponent } from './login-email-page/login-email-page.com
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { AdminPageComponent } from './admin-page/admin-page.component';
 import { AuthGuard } from './service/auth.guard';
+import { UsersToActivateComponent } from './users-to-activate/users-to-activate.component';
 
 const appRoutes: Routes = [
   { path: 'registration', component: RegistrationPageComponent },
@@ -19,6 +20,12 @@ const appRoutes: Routes = [
   {
     path: 'admin',
     component: AdminPageComponent,
+    canActivate: [AuthGuard],
+    data: { allowedRoles: ['ADMIN'] },
+  },
+  {
+    path: 'users-activate',
+    component: UsersToActivateComponent,
     canActivate: [AuthGuard],
     data: { allowedRoles: ['ADMIN'] },
   },
@@ -31,6 +38,7 @@ const appRoutes: Routes = [
     LoginPasswordPageComponent,
     LoginEmailPageComponent,
     AdminPageComponent,
+    UsersToActivateComponent,
   ],
   imports: [
     BrowserModule,

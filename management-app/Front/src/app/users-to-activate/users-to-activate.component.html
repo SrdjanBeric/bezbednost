@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>User List</title>
+    <style></style>
+  </head>
+  <body>
+    <button routerLink="/admin" class="activate-button">Go back...</button>
+    <h1>User List</h1>
+    <ul class="user-list">
+      <li *ngFor="let user of usersToActivate">
+        <span class="user-name">{{ user.username }}</span>
+        <br />
+        <span class="user-email">{{ user.email }}</span>
+        <br />
+      </li>
+    </ul>
+  </body>
+</html>
