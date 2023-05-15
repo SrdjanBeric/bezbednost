@@ -49,6 +49,10 @@ public class UserApp implements UserDetails {
     private String password;
 
     @Column
+    @NotBlank
+    private String address;
+
+    @Column
     private Boolean active = false;
 
     @ManyToOne(fetch = FetchType.EAGER)

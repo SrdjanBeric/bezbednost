@@ -59,6 +59,7 @@ public class AuthenticationService {
                     .username(registrationRequest.getUsername())
                     .password(passwordEncoder.encode(registrationRequest.getPassword()))
                     .role(role)
+                    .address(registrationRequest.getAdress())
                     .active(false)
                     .build();
             switch (role.getName()){

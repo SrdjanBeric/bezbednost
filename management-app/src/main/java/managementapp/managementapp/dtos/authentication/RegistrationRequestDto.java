@@ -25,4 +25,6 @@ public class RegistrationRequestDto {
     private String password;
     @NotBlank
     private String roleName;
+    @NotBlank
+    private String adress;
 }
