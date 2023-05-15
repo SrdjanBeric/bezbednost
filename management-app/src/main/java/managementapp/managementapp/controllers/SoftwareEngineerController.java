@@ -25,11 +25,12 @@ public class SoftwareEngineerController {
     @GetMapping("/allSkills")
     @PreAuthorize("hasAnyAuthority('SOFTWARE_ENGINEER')")
     public ResponseEntity<?> allSkills(){
-        try{
-           softwareEngineerService.skillsList();
-           return new  ResponseEntity<>(HttpStatus.OK);
-        }catch(Exception e){
-            return  new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        try {
+            List<String> skills = softwareEngineerService.getSkillsList();
+            System.out.println(skills);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getLocalizedMessage());
         }
     }
 

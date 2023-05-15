@@ -1,5 +1,6 @@
 package managementapp.managementapp.controllers;
 
+import managementapp.managementapp.dtos.authentication.UserAppDto;
 import managementapp.managementapp.models.UserApp;
 import managementapp.managementapp.services.UserAppService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public class UserAppController {
 
     @PutMapping("/update")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'HUMAN_RESOURCES_MANAGER', 'SOFTWARE_ENGINEER', 'PROJECT_MANAGER')")
-    public ResponseEntity<?>updateUser(@RequestBody UserApp userApp){
+    public ResponseEntity<?>updateUser(@RequestBody UserAppDto userApp){
         try{
             userAppService.update(userApp);
             return new ResponseEntity<>(HttpStatus.OK);

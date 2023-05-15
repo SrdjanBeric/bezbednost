@@ -1,6 +1,7 @@
 package managementapp.managementapp.services;
 
 import managementapp.managementapp.dtos.authentication.RegistrationRequestDto;
+import managementapp.managementapp.dtos.authentication.UserAppDto;
 import managementapp.managementapp.models.*;
 import managementapp.managementapp.repositories.RoleRepository;
 import managementapp.managementapp.repositories.UserAppRepository;
@@ -34,16 +35,19 @@ public class UserAppService implements UserDetailsService {
         return new ResponseEntity<>(allUsers, HttpStatus.OK);
     }
 
-    public void update(UserApp updateduserApp){
+    //update nesto zeza
+    public void update(UserAppDto updateduserApp){
         UserApp loggedInUser = userAppRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        Role role = roleRepository.findByName(updateduserApp.getRoleName());
+
         if(loggedInUser!=null) {
             loggedInUser.setUsername(updateduserApp.getUsername());
-            loggedInUser.setPassword(updateduserApp.getPassword());
+            loggedInUser.setPassword(passwordEncoder.encode((updateduserApp.getPassword())));
             if(!loggedInUser.getRole().equals("SOFTWARE_ENGINEER")) {
                 loggedInUser.setEmail(updateduserApp.getEmail());
             }
             loggedInUser.setAddress(updateduserApp.getAddress());
-            loggedInUser.setRole(updateduserApp.getRole());
+            loggedInUser.setRole(role);
             loggedInUser.setActive(updateduserApp.getActive());
 
             userAppRepository.save(loggedInUser);

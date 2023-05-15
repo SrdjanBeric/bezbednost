@@ -21,47 +21,32 @@ public class SoftwareEngineerService {
     private UserAppRepository userAppRepository;
 
 
-    //kreirane liste vestina
+    //kreiranje liste vestina
     public void skillsCreate(List<String> newSkills) {
         UserApp loggedInUser = userAppRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        if(loggedInUser.getRole().equals("SOFTWARE_ENGINEER")){
             SoftwareEngineer softwareEngineer = (SoftwareEngineer) loggedInUser;
             softwareEngineer.setSkills(newSkills);
             softwareEngineerRepository.save(softwareEngineer);
-        }else{
-            throw new RuntimeException("Can't create list of skills, because user does not Software engineer");
-        }
-
     }
 
     //update list of skils
     public void skillsUpdate(List<String>updateSkills){
         UserApp loggedInUser = userAppRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        if(loggedInUser.getRole().equals("SOFTWARE_ENGINEER")){
-            SoftwareEngineer softwareEngineer = (SoftwareEngineer) loggedInUser;
-            List<String>currentSkills = softwareEngineer.getSkills();
-            currentSkills.addAll(updateSkills);
-            softwareEngineer.setSkills(currentSkills);
-            softwareEngineerRepository.save(softwareEngineer);
-        }else{
-            throw new RuntimeException("Can't update list of skills, because user does not Software engineer");
-        }
-
+        SoftwareEngineer softwareEngineer = (SoftwareEngineer) loggedInUser;
+        softwareEngineer.setSkills(updateSkills);
+        softwareEngineerRepository.save(softwareEngineer);
     }
 
     //citanje celokupne liste
-    public List<String>skillsList(){
+    public List<String>getSkillsList() {
         UserApp loggedInUser = userAppRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         SoftwareEngineer softwareEngineer = (SoftwareEngineer) loggedInUser;
-        List<String>skills = softwareEngineer.getSkills();
-        List<String>skillsList=new ArrayList<>();
-
-        for (String skill :skills
-             ) {
-            skillsList.add(skill);
-        }
-        return skillsList;
+        ArrayList<String>skills = new ArrayList<>(softwareEngineer.getSkills());
+        return  skills;
     }
+
+
+
 
 
 }

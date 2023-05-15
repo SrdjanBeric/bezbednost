@@ -11,4 +11,6 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
 
     @Query("SELECT p FROM Project p JOIN p.taskDescriptions tp WHERE tp.softwareEngineer.id = :softwareEngineerId")
     public List<Project> findAllBySoftwareEngineerId(Long softwareEngineerId);
+
+//    public List<Project> findProjectByIdAndSoftwareEngineer(Long projectId,Long SoftwewEngineerId );
 }

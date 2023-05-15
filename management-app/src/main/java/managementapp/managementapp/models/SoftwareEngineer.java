@@ -18,8 +18,9 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class SoftwareEngineer extends UserApp {
-    // Ova anotacija kreira tabelu u bazi Software_engineer_id | Skills
+   // Ova anotacija kreira tabelu u bazi Software_engineer_id | Skills
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> skills = new ArrayList<>();
 
