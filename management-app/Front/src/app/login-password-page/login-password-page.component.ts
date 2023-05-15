@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { AuthService } from '../service/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login-password-page',
@@ -8,7 +9,7 @@ import { AuthService } from '../service/auth.service';
   styleUrls: ['./login-password-page.component.css'],
 })
 export class LoginPasswordPageComponent implements OnInit {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {}
 
@@ -22,6 +23,10 @@ export class LoginPasswordPageComponent implements OnInit {
     );
     this.authService.login(form.value.username, form.value.password).subscribe(
       (response) => {
+        const role = this.authService.getRole();
+        if (role === 'ADMIN') {
+          this.router.navigate(['/admin']);
+        }
         console.log('You have successfuly logged in!');
       },
       (error) => {

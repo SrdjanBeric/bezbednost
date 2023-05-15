@@ -12,6 +12,9 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { EditUserProfileComponent } from './edit-user-profile/edit-user-profile.component';
 import { UserCVComponent } from './user-cv/user-cv.component';
+import { AdminPageComponent } from './admin-page/admin-page.component';
+import { AuthGuard } from './service/auth.guard';
+import { UsersToActivateComponent } from './users-to-activate/users-to-activate.component';
 
 const appRoutes: Routes = [
   { path: 'registration', component: RegistrationPageComponent },
@@ -19,7 +22,19 @@ const appRoutes: Routes = [
   { path: 'login-email', component: LoginEmailPageComponent },
   {path:'user-profile/:id',component:UserProfileComponent},
   {path:'edit-user-profile/:id',component:EditUserProfileComponent},
-  {path:'user-cv/:id',component:UserCVComponent}
+  {path:'user-cv/:id',component:UserCVComponent},
+  {
+    path: 'admin',
+    component: AdminPageComponent,
+    canActivate: [AuthGuard],
+    data: { allowedRoles: ['ADMIN'] },
+  },
+  {
+    path: 'users-activate',
+    component: UsersToActivateComponent,
+    canActivate: [AuthGuard],
+    data: { allowedRoles: ['ADMIN'] },
+  },
 ];
 
 @NgModule({
@@ -30,7 +45,8 @@ const appRoutes: Routes = [
     LoginEmailPageComponent,
     UserProfileComponent,
     EditUserProfileComponent,
-    UserCVComponent
+    UserCVComponent,
+    UsersToActivateComponent
   ],
   imports: [
     BrowserModule,
