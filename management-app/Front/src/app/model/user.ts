@@ -16,7 +16,7 @@ export class User {
         this.id = obj.id;
         this.username = obj.username;
         this.active = obj.active;
-        this.role = String(obj.role);
+        this.role = String(obj.role.name);
         this.skills=obj.skills;
       }
     }
