@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { User } from '../model/user';
@@ -11,8 +11,8 @@ export class UserService {
     return this.http.get<any[]>('http://localhost:8081/user/all');
   }
   getUser(id: number): Observable<User> {
-    return this.http.get<User>('http://localhost:8081/user/' + id);
+    const token = localStorage.getItem('access_token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<User>('http://localhost:8081/user/' + id, { headers });
   }
-
-
 }
