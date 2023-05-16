@@ -1,11 +1,15 @@
 package managementapp.managementapp.services;
 
+import managementapp.managementapp.dtos.authentication.UserAppDto;
+import managementapp.managementapp.models.Role;
 import managementapp.managementapp.models.SoftwareEngineer;
 import managementapp.managementapp.models.UserApp;
+import managementapp.managementapp.repositories.RoleRepository;
 import managementapp.managementapp.repositories.SoftwareEngineerRepository;
 import managementapp.managementapp.repositories.UserAppRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,6 +23,12 @@ public class SoftwareEngineerService {
 
     @Autowired
     private UserAppRepository userAppRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
     //kreiranje liste vestina
@@ -43,6 +53,18 @@ public class SoftwareEngineerService {
         SoftwareEngineer softwareEngineer = (SoftwareEngineer) loggedInUser;
         ArrayList<String>skills = new ArrayList<>(softwareEngineer.getSkills());
         return  skills;
+    }
+
+    public void update(UserAppDto userAppDto){
+        UserApp loggedInUser = userAppRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        Role role = roleRepository.findByName(userAppDto.getRoleName());
+        loggedInUser.setUsername(userAppDto.getUsername());
+        loggedInUser.setPassword(passwordEncoder.encode((userAppDto.getPassword())));
+        loggedInUser.setAddress(userAppDto.getAddress());
+        loggedInUser.setRole(role);
+        loggedInUser.setActive(userAppDto.getActive());
+
+        userAppRepository.save(loggedInUser);
     }
 
 

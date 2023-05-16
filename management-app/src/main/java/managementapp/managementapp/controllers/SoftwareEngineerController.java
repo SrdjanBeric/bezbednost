@@ -1,5 +1,6 @@
 package managementapp.managementapp.controllers;
 
+import managementapp.managementapp.dtos.authentication.UserAppDto;
 import managementapp.managementapp.models.UserApp;
 import managementapp.managementapp.services.SoftwareEngineerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,7 @@ public class SoftwareEngineerController {
 
     @PutMapping("/updateSkills")
     @PreAuthorize("hasAnyAuthority('SOFTWARE_ENGINEER')")
-    public ResponseEntity<?>updateUser(@RequestBody List<String> updateSkills){
+    public ResponseEntity<?>updateSkills(@RequestBody List<String> updateSkills){
         try{
             softwareEngineerService.skillsUpdate(updateSkills);
             return new ResponseEntity<>(HttpStatus.OK);
@@ -50,6 +51,17 @@ public class SoftwareEngineerController {
     public ResponseEntity<?>createSkills(@RequestBody List<String> createSkills){
         try{
             softwareEngineerService.skillsCreate(createSkills);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/updateEngineer")
+    @PreAuthorize("hasAnyAuthority('SOFTWARE_ENGINEER')")
+    public ResponseEntity<?>updateUser(@RequestBody UserAppDto userAppDto){
+        try{
+            softwareEngineerService.update(userAppDto);
             return new ResponseEntity<>(HttpStatus.OK);
         }catch(Exception e){
             return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

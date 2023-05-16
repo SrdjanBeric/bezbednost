@@ -36,25 +36,21 @@ public class UserAppService implements UserDetailsService {
     }
 
     //update nesto zeza
+    ///i skroz naopacke radi
+    // pogledati jos malo
     public void update(UserAppDto updateduserApp){
         UserApp loggedInUser = userAppRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         Role role = roleRepository.findByName(updateduserApp.getRoleName());
 
-        if(loggedInUser!=null) {
             loggedInUser.setUsername(updateduserApp.getUsername());
             loggedInUser.setPassword(passwordEncoder.encode((updateduserApp.getPassword())));
-            if(!loggedInUser.getRole().equals("SOFTWARE_ENGINEER")) {
-                loggedInUser.setEmail(updateduserApp.getEmail());
-            }
+            loggedInUser.setEmail(updateduserApp.getEmail());
             loggedInUser.setAddress(updateduserApp.getAddress());
             loggedInUser.setRole(role);
             loggedInUser.setActive(updateduserApp.getActive());
 
+
             userAppRepository.save(loggedInUser);
-        }else {
-            ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("User with id" + loggedInUser.getId() + "does not found");
-        }
 
 
 
