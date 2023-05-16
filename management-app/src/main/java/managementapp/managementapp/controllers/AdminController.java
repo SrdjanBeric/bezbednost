@@ -33,4 +33,14 @@ public class AdminController {
         }
     }
 
+    @GetMapping("/activeUsers")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<?> getActiveUsers(){
+        try{
+            return adminService.getActiveUsers();
+        }catch (Exception e){
+            return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

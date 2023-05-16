@@ -49,4 +49,18 @@ public class AdminService {
                     .body("An error occurred while activating user with id: " + userId);
         }
     }
+
+
+    //da li to treba ovako
+    public ResponseEntity<?> getActiveUsers(){
+        try{
+            List<UserApp> usersToActivate = userAppRepository.findUserAppsByActive(true);
+            return new ResponseEntity<>(usersToActivate, HttpStatus.OK);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred while getting all users to activate.");
+        }
+    }
+
+
 }
