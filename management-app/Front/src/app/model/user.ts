@@ -4,7 +4,7 @@ export class User {
     password:string='';
     username:string='';
     active:boolean=false;
-    role:string='';
+    role:any='';
     skills:string[]=[];
 
 
@@ -16,7 +16,7 @@ export class User {
         this.id = obj.id;
         this.username = obj.username;
         this.active = obj.active;
-        this.role = String(obj.role.name);
+        this.role = obj.role;
         this.skills=obj.skills;
       }
     }

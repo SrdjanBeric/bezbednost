@@ -18,6 +18,8 @@ export class UserProfileComponent {
     this.route.params.subscribe((params: Params) => {
       this.userService.getUser(params['id']).subscribe(res => {
         this.user = res;
+        this.user.role=res.role.name;
+        console.log(res.role.name);
       })
     });
   }
