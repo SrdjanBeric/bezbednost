@@ -34,4 +34,13 @@ export class ProjectService {
       { headers }
     );
   }
+
+  removeEngineer(projectId: number, softwareEngineerId: number) {
+    const token = localStorage.getItem('access_token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.delete<any[]>(
+      `http://localhost:8081/project/${projectId}/removeEngineer/${softwareEngineerId}`,
+      { headers }
+    );
+  }
 }

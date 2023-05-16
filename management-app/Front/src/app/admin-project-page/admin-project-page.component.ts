@@ -12,6 +12,10 @@ export class AdminProjectPageComponent implements OnInit {
   projects: any[] = [];
 
   ngOnInit(): void {
+    this.loadAllUsers();
+  }
+
+  loadAllUsers() {
     this.projectService.allUsers().subscribe((projectResponse) => {
       this.projects = projectResponse;
       console.log(this.projects);
@@ -23,5 +27,20 @@ export class AdminProjectPageComponent implements OnInit {
       queryParams: { project: JSON.stringify(project) },
     });
     console.log('Add engineer to project:', project);
+  }
+
+  removeEngineerFromProject(projectId: any, softwareEngineerId: any) {
+    console.log('Project ID:', projectId);
+    console.log('Software Engineer ID:', softwareEngineerId);
+
+    this.projectService.removeEngineer(projectId, softwareEngineerId).subscribe(
+      (response) => {
+        console.log('Engineer succesfully removed');
+        this.loadAllUsers();
+      },
+      (error) => {
+        console.log('There was some kind of error');
+      }
+    );
   }
 }
