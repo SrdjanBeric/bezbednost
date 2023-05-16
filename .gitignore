@@ -26,3 +26,11 @@ hs_err_pid*
 *.mjs
 
 node_modules/
+management-app/Front/.browserslistrc
+management-app/Front/angular.json
+management-app/Front/package-lock.json
+management-app/Front/package.json
+management-app/Front/tsconfig.json
+management-app/src/main/resources/application.properties
+management-app/Front/src/test.ts
+management-app/Front/src/polyfills.ts
