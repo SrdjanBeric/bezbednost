@@ -41,9 +41,9 @@ public class SoftwareEngineerProjectService {
 //
 //        return projects;
 //    }
-//
-//
-//    //nastaviti ovo jos..
+
+
+    //nastaviti ovo jos..
 //    public void editWorkDescription(String workDescription){
 //        UserApp loggedInUser = userAppRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 ////       List<>projects = projectService.getAllProjects();

@@ -49,7 +49,7 @@ public class AdminController {
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<?>updateUser(@RequestBody RegistrationRequestDto userApp){
         try{
-            adminService.userAppCreate(userApp);
+            adminService.adminCreate(userApp);
             return new ResponseEntity<>(HttpStatus.CREATED);
         }catch(Exception e){
             return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

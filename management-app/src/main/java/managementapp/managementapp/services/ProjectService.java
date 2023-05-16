@@ -1,14 +1,9 @@
 package managementapp.managementapp.services;
 
 import managementapp.managementapp.dtos.project.AddEngineerToProjectRequestDto;
-import managementapp.managementapp.models.Project;
-import managementapp.managementapp.models.SoftwareEngineer;
-import managementapp.managementapp.models.SoftwareEngineerProject;
-import managementapp.managementapp.models.UserApp;
-import managementapp.managementapp.repositories.ProjectRepository;
-import managementapp.managementapp.repositories.SoftwareEngineerProjectRepository;
-import managementapp.managementapp.repositories.SoftwareEngineerRepository;
-import managementapp.managementapp.repositories.UserAppRepository;
+import managementapp.managementapp.dtos.project.ProjectDTO;
+import managementapp.managementapp.models.*;
+import managementapp.managementapp.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +13,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProjectService {
@@ -29,6 +25,9 @@ public class ProjectService {
     private SoftwareEngineerRepository softwareEngineerRepository;
     @Autowired
     private SoftwareEngineerProjectRepository softwareEngineerProjectRepository;
+
+    @Autowired
+    private ProjectManagerRepository projectManagerRepository;
 
     public ResponseEntity<?> getAllProjects(){
         UserApp loggedInUser = userAppRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -108,6 +107,29 @@ public class ProjectService {
             return true;
         }
         return false;
+    }
+
+    public void createProject(ProjectDTO projectDTO){
+        UserApp loggedInUser = userAppRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        Optional<Project>projectOptional = projectRepository.findByName(projectDTO.getName());
+        if(projectOptional.isPresent()){
+             ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Can not create this project, because project with " + projectDTO.getName() + "exist.");
+        }else{
+            Project project =new Project();
+            project.setName(projectDTO.getName());
+            project.setStartDate(projectDTO.getStartDate());
+            project.setEndDate(projectDTO.getEndDate());
+            Optional<ProjectManager> projectManagerOptional = projectManagerRepository.findById(projectDTO.getManagerId());
+            if (projectManagerOptional.isPresent()) {
+                project.setProjectManager(projectManagerOptional.get());
+            } else {
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Cannot find the specified project manager.");
+            }
+
+            projectRepository.save(project);
+            ResponseEntity.status(HttpStatus.CREATED);
+
+        }
     }
 
 }

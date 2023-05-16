@@ -37,13 +37,12 @@ public class UserAppService implements UserDetailsService {
     // pogledati jos malo
     public void update(UserAppDto updateduserApp){
         UserApp loggedInUser = userAppRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        Role role = roleRepository.findByName(updateduserApp.getRoleName());
-
+//        Role role = roleRepository.findByName(updateduserApp.getRoleName());
             loggedInUser.setUsername(updateduserApp.getUsername());
             loggedInUser.setPassword(passwordEncoder.encode((updateduserApp.getPassword())));
             loggedInUser.setEmail(updateduserApp.getEmail());
             loggedInUser.setAddress(updateduserApp.getAddress());
-            loggedInUser.setRole(role);
+//            loggedInUser.setRole(role);
             loggedInUser.setActive(updateduserApp.getActive());
 
 

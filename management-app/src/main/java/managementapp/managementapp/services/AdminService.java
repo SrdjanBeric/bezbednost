@@ -1,6 +1,7 @@
 package managementapp.managementapp.services;
 
 import managementapp.managementapp.dtos.authentication.RegistrationRequestDto;
+import managementapp.managementapp.dtos.project.ProjectDTO;
 import managementapp.managementapp.dtos.project.UserAppDto;
 import managementapp.managementapp.models.*;
 import managementapp.managementapp.repositories.AdminRepository;
@@ -76,10 +77,9 @@ public class AdminService {
         }
     }
 
-    public void userAppCreate(RegistrationRequestDto registrationRequest) {
+    public void adminCreate(RegistrationRequestDto registrationRequest) {
         try {
             if (userAppService.userExistsByUsernameOrEmail(registrationRequest.getUsername(), registrationRequest.getEmail())) {
-//                return ResponseEntity.status(HttpStatus.CONFLICT).body("A user with that username or email already exists.");
                 ResponseEntity.status(HttpStatus.CONFLICT);
             }
             Role role = roleRepository.findByName("ADMIN");
@@ -89,7 +89,7 @@ public class AdminService {
                     .password(passwordEncoder.encode(registrationRequest.getPassword()))
                     .role(role)
                     .address(registrationRequest.getAddress())
-                    .active(false)
+                    .active(true)
                     .build();
             userAppService.save(new Admin(userToRegister));
             ResponseEntity.status(HttpStatus.CREATED);
@@ -100,4 +100,5 @@ public class AdminService {
 
 
     }
+
 }
