@@ -12,16 +12,18 @@ INSERT INTO user_app(id, username, email, password, active, role_id, password_sa
 INSERT INTO software_engineer(id) values (2);
 INSERT INTO user_app(id, username, email, password, active, role_id, password_salt) VALUES (nextval('user_app_seq'), 'engineer2', 'engineer2@email.com', '$2a$10$SFp508WvAPKDbemvKcYdd.wLahgUcoBDOPjBRXgNMzDBe3ot/ElwG', true, 2, '');
 INSERT INTO software_engineer(id) values (3);
+INSERT INTO user_app(id, username, email, password, active, role_id, password_salt) VALUES (nextval('user_app_seq'), 'engineer3', 'engineer3@email.com', '$2a$10$SFp508WvAPKDbemvKcYdd.wLahgUcoBDOPjBRXgNMzDBe3ot/ElwG', true, 2, '');
+INSERT INTO software_engineer(id) values (4);
 --Project managers
 INSERT INTO user_app(id, username, email, password, active, role_id, password_salt) VALUES (nextval('user_app_seq'), 'manager1', 'manager1@email.com', '$2a$10$SFp508WvAPKDbemvKcYdd.wLahgUcoBDOPjBRXgNMzDBe3ot/ElwG', true, 3, '');
-INSERT INTO project_manager(id) values (4);
-INSERT INTO user_app(id, username, email, password, active, role_id, password_salt) VALUES (nextval('user_app_seq'), 'manager2', 'manager2@email.com', '$2a$10$SFp508WvAPKDbemvKcYdd.wLahgUcoBDOPjBRXgNMzDBe3ot/ElwG', true, 3, '');
 INSERT INTO project_manager(id) values (5);
+INSERT INTO user_app(id, username, email, password, active, role_id, password_salt) VALUES (nextval('user_app_seq'), 'manager2', 'manager2@email.com', '$2a$10$SFp508WvAPKDbemvKcYdd.wLahgUcoBDOPjBRXgNMzDBe3ot/ElwG', true, 3, '');
+INSERT INTO project_manager(id) values (6);
 
 
 --Projects
-INSERT INTO project(id, name, start_date, end_date, project_manager_id) VALUES (nextval('project_seq_gen'), 'project1', '01-01-2022', '01-01-2023', 4);
-INSERT INTO project(id, name, start_date, end_date, project_manager_id) VALUES (nextval('project_seq_gen'), 'project2', '01-01-2023', '01-01-2024', 5);
+INSERT INTO project(id, name, start_date, end_date, project_manager_id) VALUES (nextval('project_seq_gen'), 'project1', '01-01-2022', '01-01-2023', 5);
+INSERT INTO project(id, name, start_date, end_date, project_manager_id) VALUES (nextval('project_seq_gen'), 'project2', '01-01-2023', '01-01-2024', 6);
 
 --Software engineer projects
 INSERT INTO software_engineer_project(id, software_engineer_id, project_id, work_description, start_date, end_date, active) VALUES (nextval('software_engineer_project_seq_gen'), 3, 1, 'Development', '01-01-2022', '01-01-2023', true);
