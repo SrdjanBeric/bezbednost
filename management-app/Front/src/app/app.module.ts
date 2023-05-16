@@ -19,15 +19,28 @@ import { AdminProjectPageComponent } from './admin-project-page/admin-project-pa
 import { AdminAllUsersComponent } from './admin-all-users/admin-all-users.component';
 import { AddEngineerPageComponent } from './add-engineer-page/add-engineer-page.component';
 import { ManagerProfileComponent } from './manager-profile/manager-profile.component';
+import { GuestGuard } from './service/guest.guard';
 
 const appRoutes: Routes = [
-  { path: 'registration', component: RegistrationPageComponent },
-  { path: 'login-pass', component: LoginPasswordPageComponent },
-  { path: 'login-email', component: LoginEmailPageComponent },
-  {path:'user-profile/:id',component:UserProfileComponent},
-  {path:'edit-user-profile/:id',component:EditUserProfileComponent},
-  {path:'user-cv/:id',component:UserCVComponent},
-  {path:'manager-profile/:id',component:ManagerProfileComponent},
+  {
+    path: 'registration',
+    component: RegistrationPageComponent,
+    canActivate: [GuestGuard],
+  },
+  {
+    path: 'login-pass',
+    component: LoginPasswordPageComponent,
+    canActivate: [GuestGuard],
+  },
+  {
+    path: 'login-email',
+    component: LoginEmailPageComponent,
+    canActivate: [GuestGuard],
+  },
+  { path: 'user-profile/:id', component: UserProfileComponent },
+  { path: 'edit-user-profile/:id', component: EditUserProfileComponent },
+  { path: 'user-cv/:id', component: UserCVComponent },
+  { path: 'manager-profile/:id', component: ManagerProfileComponent },
   {
     path: 'admin',
     component: AdminPageComponent,
@@ -74,7 +87,7 @@ const appRoutes: Routes = [
     AdminProjectPageComponent,
     AdminAllUsersComponent,
     AddEngineerPageComponent,
-    ManagerProfileComponent
+    ManagerProfileComponent,
   ],
   imports: [
     BrowserModule,

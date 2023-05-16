@@ -8,9 +8,12 @@
   </head>
   <header>
     <ul class="navigation-bar">
-      <li routerLink="/registration">Registration page</li>
-      <li routerLink="/login-pass">Login-pass page</li>
-      <li routerLink="/login-email">Login-email page</li>
+      <li *ngIf="!isLoggedIn()" routerLink="/registration">
+        Registration page
+      </li>
+      <li *ngIf="!isLoggedIn()" routerLink="/login-pass">Login-pass page</li>
+      <li *ngIf="!isLoggedIn()" routerLink="/login-email">Login-email page</li>
+      <li *ngIf="isLoggedIn()" (click)="logout()">Logout</li>
     </ul>
   </header>
   <body>
