@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>User List</title>
+    <style></style>
+  </head>
+  <body>
+    <button routerLink="/admin" class="activate-button">Go back...</button>
+    <h1>User List</h1>
+    <ul class="user-list">
+      <li *ngFor="let project of projects">
+        <span>{{ project.name }}</span>
+        <br />
+        <span>Start Date: {{ project.startDate }}</span>
+        <br />
+        <span>End Date: {{ project.endDate }}</span>
+        <br />
+        <span> Project Manager: {{ project.projectManager.username }}</span>
+        <br />
+        <span>Engineers:</span>
+        <ul>
+          <li *ngFor="let task of project.taskDescriptions">
+            <span>{{ task.softwareEngineer.username }}</span>
+            <br />
+            <span>{{ task.softwareEngineer.id }}</span>
+            <br />
+            <button
+              (click)="
+                removeEngineerFromProject(project.id, task.softwareEngineer.id)
+              "
+            >
+              Remove Engineer
+            </button>
+          </li>
+        </ul>
+        <button (click)="addEngineerToProject(project)">Add Engineer</button>
+      </li>
+    </ul>
+  </body>
+</html>

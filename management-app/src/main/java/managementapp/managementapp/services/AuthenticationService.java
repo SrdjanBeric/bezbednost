@@ -6,6 +6,7 @@ import managementapp.managementapp.dtos.authentication.UserTokenState;
 import managementapp.managementapp.models.*;
 import managementapp.managementapp.repositories.RoleRepository;
 import managementapp.managementapp.repositories.UserAppRepository;
+import managementapp.managementapp.security.HashingAlogorithm;
 import managementapp.managementapp.security.TokenBasedAuthentication;
 import managementapp.managementapp.utils.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,10 +57,12 @@ public class AuthenticationService {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("Invalid role name.");
             }
+            String passwordSalt = HashingAlogorithm.generateSalt();
             UserApp userToRegister = UserApp.builder()
                     .email(registrationRequest.getEmail())
                     .username(registrationRequest.getUsername())
-                    .password(passwordEncoder.encode(registrationRequest.getPassword()))
+                    .password(passwordEncoder.encode(registrationRequest.getPassword() + passwordSalt))
+                    .passwordSalt(passwordSalt)
                     .role(role)
                     .active(false)
                     .build();
@@ -88,8 +91,13 @@ public class AuthenticationService {
     public ResponseEntity<?> login(LoginRequestDto loginRequestDto){
         // Ukoliko kredencijali nisu ispravni, logovanje nece biti uspesno, desice se AuthenticationException
         try{
+            String attemptedLoginPasswordSalt = "";
+            UserApp attemptedLoginUser = userAppRepository.findByUsername(loginRequestDto.getUsername());
+            if(attemptedLoginUser != null){
+                attemptedLoginPasswordSalt = attemptedLoginUser.getPasswordSalt();
+            }
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    loginRequestDto.getUsername(), loginRequestDto.getPassword()));
+                    loginRequestDto.getUsername(), loginRequestDto.getPassword() + attemptedLoginPasswordSalt));
             // Ukoliko je autentifikacija uspesna, ubaci korisnika u trenutni security kontekst
             SecurityContextHolder.getContext().setAuthentication(authentication);
             // Kreiraj token za tog korisnika

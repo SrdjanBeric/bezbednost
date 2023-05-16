@@ -11,8 +11,19 @@ export class UsersToActivateComponent implements OnInit {
   constructor(private adminService: AdminService) {}
 
   ngOnInit(): void {
+    this.loadUsersToActivate();
+  }
+
+  loadUsersToActivate(): void {
     this.adminService.getUsersToActivate().subscribe((users) => {
       this.usersToActivate = users;
+    });
+  }
+
+  activateUser(userId: number): void {
+    this.adminService.activateUser(userId).subscribe((response) => {
+      console.log('User activated successfully');
+      this.loadUsersToActivate();
     });
   }
 }

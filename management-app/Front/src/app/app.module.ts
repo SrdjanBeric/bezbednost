@@ -15,6 +15,9 @@ import { UserCVComponent } from './user-cv/user-cv.component';
 import { AdminPageComponent } from './admin-page/admin-page.component';
 import { AuthGuard } from './service/auth.guard';
 import { UsersToActivateComponent } from './users-to-activate/users-to-activate.component';
+import { AdminProjectPageComponent } from './admin-project-page/admin-project-page.component';
+import { AdminAllUsersComponent } from './admin-all-users/admin-all-users.component';
+import { AddEngineerPageComponent } from './add-engineer-page/add-engineer-page.component';
 
 const appRoutes: Routes = [
   { path: 'registration', component: RegistrationPageComponent },
@@ -35,6 +38,24 @@ const appRoutes: Routes = [
     canActivate: [AuthGuard],
     data: { allowedRoles: ['ADMIN'] },
   },
+  {
+    path: 'admin-project',
+    component: AdminProjectPageComponent,
+    canActivate: [AuthGuard],
+    data: { allowedRoles: ['ADMIN'] },
+  },
+  {
+    path: 'admin-users',
+    component: AdminAllUsersComponent,
+    canActivate: [AuthGuard],
+    data: { allowedRoles: ['ADMIN'] },
+  },
+  {
+    path: 'add-engineer',
+    component: AddEngineerPageComponent,
+    canActivate: [AuthGuard],
+    data: { allowedRoles: ['ADMIN'] },
+  },
 ];
 
 @NgModule({
@@ -46,7 +67,11 @@ const appRoutes: Routes = [
     UserProfileComponent,
     EditUserProfileComponent,
     UserCVComponent,
-    UsersToActivateComponent
+    AdminPageComponent,
+    UsersToActivateComponent,
+    AdminProjectPageComponent,
+    AdminAllUsersComponent,
+    AddEngineerPageComponent,
   ],
   imports: [
     BrowserModule,
