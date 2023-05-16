@@ -10,6 +10,9 @@ import { AuthService } from '../service/auth.service';
 export class RegistrationPageComponent implements OnInit {
   constructor(private authSevice: AuthService) {}
 
+  username: string = '';
+  password: string = '';
+
   ngOnInit(): void {}
 
   submitForm(form: NgForm) {
@@ -18,8 +21,10 @@ export class RegistrationPageComponent implements OnInit {
     } else {
       const registrationRequest = {
         email: form.value.email,
-        username: form.value.username,
-        password: form.value.password,
+        //username: form.value.username,
+        username: this.username, // changed
+        password: this.password,
+        //password: form.value.password,
         roleName: form.value.roleName,
       };
 

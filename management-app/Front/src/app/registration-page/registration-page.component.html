@@ -14,10 +14,11 @@
           <input
             type="text"
             placeholder="Enter your First Name"
-            #username="ngModel"
             name="username"
+            minlength="4"
+            pattern="^[a-zA-Z0-9_]*$"
             required
-            ngModel
+            [(ngModel)]="username"
           />
 
           <input
@@ -34,8 +35,8 @@
             name="password"
             required
             minlength="8"
-            ngModel
-            #password="ngModel"
+            pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$"
+            [(ngModel)]="password"
           />
 
           <input
