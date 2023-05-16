@@ -1,11 +1,16 @@
 package managementapp.managementapp.security;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+
 import javax.crypto.KeyGenerator;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Base64;
+import java.util.UUID;
 
 public class HashingAlogorithm {
     private static final String HASHING_SECRET_KEY = "this_is_some_random_secret";
@@ -36,5 +41,12 @@ public class HashingAlogorithm {
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
+    }
+
+    public static String generateSalt() {
+        byte[] salt = new byte[16];
+        SecureRandom random = new SecureRandom();
+        random.nextBytes(salt);
+        return Base64.getEncoder().encodeToString(salt);
     }
 }
