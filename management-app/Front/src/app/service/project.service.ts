@@ -13,4 +13,25 @@ export class ProjectService {
       headers,
     });
   }
+
+  addEnginer(requestDto: any): Observable<any[]> {
+    const token = localStorage.getItem('access_token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.post<any[]>(
+      'http://localhost:8081/project/addEngineer',
+      requestDto,
+      {
+        headers,
+      }
+    );
+  }
+
+  getAvailableEngineers(projectId: number) {
+    const token = localStorage.getItem('access_token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<any[]>(
+      `http://localhost:8081/project/${projectId}/engineer/available`,
+      { headers }
+    );
+  }
 }

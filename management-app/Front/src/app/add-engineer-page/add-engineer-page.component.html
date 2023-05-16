@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>User List</title>
+    <style></style>
+  </head>
+  <body>
+    <button routerLink="/admin" class="activate-button">Go back...</button>
+    <h1>Engineer List</h1>
+
+    <ul class="user-list">
+      <li *ngFor="let engineer of engineers">
+        <span>Id: {{ engineer.id }}</span>
+        <br />
+        <span>Username: {{ engineer.username }}</span>
+        <br />
+        <span>Email: {{ engineer.email }}</span>
+        <br />
+
+        <button class="main-button" (click)="addEngineer(engineer.id)">
+          Add Engineer to project
+        </button>
+      </li>
+    </ul>
+  </body>
+</html>
