@@ -25,6 +25,7 @@
             <span>{{ task.softwareEngineer.id }}</span>
             <br />
             <button
+              class="delete-button"
               (click)="
                 removeEngineerFromProject(project.id, task.softwareEngineer.id)
               "
@@ -33,7 +34,9 @@
             </button>
           </li>
         </ul>
-        <button (click)="addEngineerToProject(project)">Add Engineer</button>
+        <button class="main-button" (click)="addEngineerToProject(project)">
+          Add Engineer
+        </button>
       </li>
     </ul>
   </body>

@@ -66,3 +66,23 @@ h1 {
   background-color: #fff;
   color: #2c3333;
 }
+
+.delete-button {
+  margin-top: 1rem;
+  border-radius: 28px;
+  font-family: Arial;
+  color: #fff;
+  background-color: #f16969;
+  font-size: 1rem;
+  padding: 10px 15px 10px 15px;
+  text-decoration: none;
+  transition: 0.3s transform;
+  border: none;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  transform: translateY(-3px);
+  background-color: #ff9797;
+  color: #2c3333;
+}
