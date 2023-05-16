@@ -1,6 +1,8 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient,HttpHeaders } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
+import { Project } from '../model/project';
+import { AETPRDTO } from '../dto/add-engineer-to-project-request-dto';
 
 @Injectable({ providedIn: 'root' })
 export class ProjectService {
@@ -43,4 +45,9 @@ export class ProjectService {
       { headers }
     );
   }
+  getProjects(): Observable<any[]> {
+    return this.http.get<any[]>('http://localhost:8081/project/all');
+  }
+
+
 }

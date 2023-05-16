@@ -18,6 +18,7 @@ import { UsersToActivateComponent } from './users-to-activate/users-to-activate.
 import { AdminProjectPageComponent } from './admin-project-page/admin-project-page.component';
 import { AdminAllUsersComponent } from './admin-all-users/admin-all-users.component';
 import { AddEngineerPageComponent } from './add-engineer-page/add-engineer-page.component';
+import { ManagerProfileComponent } from './manager-profile/manager-profile.component';
 
 const appRoutes: Routes = [
   { path: 'registration', component: RegistrationPageComponent },
@@ -26,6 +27,7 @@ const appRoutes: Routes = [
   {path:'user-profile/:id',component:UserProfileComponent},
   {path:'edit-user-profile/:id',component:EditUserProfileComponent},
   {path:'user-cv/:id',component:UserCVComponent},
+  {path:'manager-profile/:id',component:ManagerProfileComponent},
   {
     path: 'admin',
     component: AdminPageComponent,
@@ -72,6 +74,7 @@ const appRoutes: Routes = [
     AdminProjectPageComponent,
     AdminAllUsersComponent,
     AddEngineerPageComponent,
+    ManagerProfileComponent
   ],
   imports: [
     BrowserModule,
