@@ -13,4 +13,12 @@ export class AdminService {
       headers,
     });
   }
+
+  activateUser(userId: number): Observable<any> {
+    console.log('Here is the userID ' + userId);
+    const url = `http://localhost:8081/admin/activateUser/${userId}`;
+    const token = localStorage.getItem('access_token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.patch<any>(url, null, { headers });
+  }
 }

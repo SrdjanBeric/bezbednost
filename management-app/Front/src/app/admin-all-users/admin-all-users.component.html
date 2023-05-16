@@ -8,14 +8,13 @@
     <button routerLink="/admin" class="activate-button">Go back...</button>
     <h1>User List</h1>
     <ul class="user-list">
-      <li *ngFor="let user of usersToActivate">
-        <span class="user-name">{{ user.username }}</span>
+      <li *ngFor="let user of users">
+        <span>{{ user.username }}</span>
         <br />
-        <span class="user-email">{{ user.email }}</span>
+        <span>Email: {{ user.email }}</span>
         <br />
-        <button class="main-button" (click)="activateUser(user.id)">
-          Activate
-        </button>
+        <span>Role: {{ user.role.name }}</span>
+        <br />
       </li>
     </ul>
   </body>
