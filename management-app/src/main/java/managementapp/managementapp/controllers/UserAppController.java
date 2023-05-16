@@ -1,15 +1,12 @@
 package managementapp.managementapp.controllers;
 
-import managementapp.managementapp.dtos.authentication.UserAppDto;
-import managementapp.managementapp.models.UserApp;
+import managementapp.managementapp.dtos.project.UserAppDto;
 import managementapp.managementapp.services.UserAppService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/user")

@@ -1,6 +1,6 @@
 package managementapp.managementapp.services;
 
-import managementapp.managementapp.dtos.authentication.UserAppDto;
+import managementapp.managementapp.dtos.project.UserAppDto;
 import managementapp.managementapp.models.Role;
 import managementapp.managementapp.models.SoftwareEngineer;
 import managementapp.managementapp.models.UserApp;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class SoftwareEngineerService {

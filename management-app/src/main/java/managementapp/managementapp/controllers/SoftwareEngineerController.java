@@ -1,7 +1,6 @@
 package managementapp.managementapp.controllers;
 
-import managementapp.managementapp.dtos.authentication.UserAppDto;
-import managementapp.managementapp.models.UserApp;
+import managementapp.managementapp.dtos.project.UserAppDto;
 import managementapp.managementapp.services.SoftwareEngineerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

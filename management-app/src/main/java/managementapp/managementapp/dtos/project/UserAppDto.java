@@ -1,4 +1,4 @@
-package managementapp.managementapp.dtos.authentication;
+package managementapp.managementapp.dtos.project;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

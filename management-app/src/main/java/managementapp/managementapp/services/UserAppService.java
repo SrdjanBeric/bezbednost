@@ -1,12 +1,10 @@
 package managementapp.managementapp.services;
 
-import managementapp.managementapp.dtos.authentication.RegistrationRequestDto;
-import managementapp.managementapp.dtos.authentication.UserAppDto;
+import managementapp.managementapp.dtos.project.UserAppDto;
 import managementapp.managementapp.models.*;
 import managementapp.managementapp.repositories.RoleRepository;
 import managementapp.managementapp.repositories.UserAppRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,7 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserAppService implements UserDetailsService {
