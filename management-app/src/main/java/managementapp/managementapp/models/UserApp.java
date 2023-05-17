@@ -51,7 +51,6 @@ public class UserApp implements UserDetails {
     private String passwordSalt;
 
     @Column
-    @NotBlank
     private String address;
 
     @Column

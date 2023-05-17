@@ -6,23 +6,16 @@
         <td align="center">
           <div class="row">
             <p class="block">Email:</p>
-            <p name="email" class="block">{{user?.email}}</p>
+            <p name="email" class="block">{{ user?.email }}</p>
           </div>
         </td>
       </tr>
-      <tr>
-        <td align="center">
-          <div class="row">
-            <p class="block">Password:</p>
-            <p name="password" class="block">{{user?.password}}</p>
-          </div>
-        </td>
-      </tr>
+
       <tr>
         <td align="center">
           <div class="row">
             <p class="block">Username:</p>
-            <p name="name" class="block">{{user?.username}}</p>
+            <p name="name" class="block">{{ user?.username }}</p>
           </div>
         </td>
       </tr>
@@ -30,21 +23,21 @@
         <td align="center">
           <div class="row">
             <p class="block">Role:</p>
-            <p name="address" class="block">{{user?.role}}</p>
+            <p name="address" class="block">{{ user?.role }}</p>
           </div>
         </td>
       </tr>
-      <tr>
+      <tr></tr>
 
       <tr>
         <td align="center">
-          <button class="btn" (click)="goToEditPage()" >Edit</button>
+          <button class="btn" (click)="goToEditPage()">Edit</button>
         </td>
         <td align="center">
-          <button class="btn" (click)="goToCV()" >View CV</button>
+          <button class="btn" (click)="goToCV()">View CV</button>
         </td>
         <td align="center">
-          <button class="btn" (click)="viewProjects()" >View projects</button>
+          <button class="btn" (click)="viewProjects()">View projects</button>
         </td>
       </tr>
     </table>

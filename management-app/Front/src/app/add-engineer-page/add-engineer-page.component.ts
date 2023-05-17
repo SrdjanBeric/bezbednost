@@ -30,6 +30,7 @@ export class AddEngineerPageComponent implements OnInit {
     this.projectService
       .getAvailableEngineers(this.projectId)
       .subscribe((response) => {
+        
         this.engineers = response;
         console.log(this.engineers);
         console.log(this.project);

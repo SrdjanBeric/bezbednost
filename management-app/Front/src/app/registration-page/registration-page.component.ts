@@ -26,6 +26,7 @@ export class RegistrationPageComponent implements OnInit {
         password: this.password,
         //password: form.value.password,
         roleName: form.value.roleName,
+        address: form.value.adress,
       };
 
       this.authSevice.signup(registrationRequest).subscribe(
