@@ -1,5 +1,6 @@
 package managementapp.managementapp.controllers;
 
+import managementapp.managementapp.dtos.project.UserAppDto;
 import managementapp.managementapp.services.UserAppService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,4 +41,17 @@ public class UserAppController {
             return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PutMapping("/update")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'HUMAN_RESOURCES_MANAGER', 'SOFTWARE_ENGINEER', 'PROJECT_MANAGER')")
+    public ResponseEntity<?>updateUser(@RequestBody UserAppDto userApp){
+        try{
+            userAppService.update(userApp);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 }

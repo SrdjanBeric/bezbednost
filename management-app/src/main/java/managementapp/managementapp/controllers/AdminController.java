@@ -1,5 +1,7 @@
 package managementapp.managementapp.controllers;
 
+import managementapp.managementapp.dtos.authentication.RegistrationRequestDto;
+import managementapp.managementapp.dtos.project.UserAppDto;
 import managementapp.managementapp.services.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,6 +31,27 @@ public class AdminController {
         try{
             return adminService.approveRegistrationRequest(userId);
         }catch (Exception e){
+            return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/activeUsers")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<?> getActiveUsers(){
+        try{
+            return adminService.getActiveUsers();
+        }catch (Exception e){
+            return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/addAdmin")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    public ResponseEntity<?>updateUser(@RequestBody RegistrationRequestDto userApp){
+        try{
+            adminService.adminCreate(userApp);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }catch(Exception e){
             return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

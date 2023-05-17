@@ -64,6 +64,7 @@ public class AuthenticationService {
                     .password(passwordEncoder.encode(registrationRequest.getPassword() + passwordSalt))
                     .passwordSalt(passwordSalt)
                     .role(role)
+                    .address(registrationRequest.getAddress())
                     .active(false)
                     .build();
             switch (role.getName()){

@@ -51,6 +51,10 @@ public class UserApp implements UserDetails {
     private String passwordSalt;
 
     @Column
+    @NotBlank
+    private String address;
+
+    @Column
     private Boolean active = false;
 
     @ManyToOne(fetch = FetchType.EAGER)
