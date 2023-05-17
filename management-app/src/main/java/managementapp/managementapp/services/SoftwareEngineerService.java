@@ -58,7 +58,7 @@ public class SoftwareEngineerService {
         UserApp loggedInUser = userAppRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         Role role = roleRepository.findByName(userAppDto.getRoleName());
         loggedInUser.setUsername(userAppDto.getUsername());
-        loggedInUser.setPassword(passwordEncoder.encode((userAppDto.getPassword())));
+        loggedInUser.setPassword(passwordEncoder.encode((userAppDto.getPassword() + loggedInUser.getPasswordSalt())));
         loggedInUser.setAddress(userAppDto.getAddress());
         loggedInUser.setRole(role);
         loggedInUser.setActive(userAppDto.getActive());

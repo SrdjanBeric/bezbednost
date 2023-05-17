@@ -16,6 +16,6 @@ import javax.validation.constraints.NotBlank;
 public class Admin extends UserApp {
 
     public Admin(UserApp userApp) {
-        super(userApp.getId(), userApp.getUsername(), userApp.getEmail(), userApp.getPassword(), userApp.getPasswordSalt(), userApp.getActive(), userApp.getRole());
+        super(userApp.getId(), userApp.getUsername(), userApp.getEmail(), userApp.getPassword(), userApp.getPasswordSalt(), userApp.getAddress(), userApp.getActive(), userApp.getRole());
     }
 }
