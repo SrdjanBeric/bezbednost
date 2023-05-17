@@ -20,7 +20,7 @@ import { AdminAllUsersComponent } from './admin-all-users/admin-all-users.compon
 import { AddEngineerPageComponent } from './add-engineer-page/add-engineer-page.component';
 import { ManagerProfileComponent } from './manager-profile/manager-profile.component';
 import { EditManagerProfileComponent } from './edit-manager-profile/edit-manager-profile.component';
-import { ManagerProjectsComponent } from './manager-projects/manager-projects.component';
+import { ManagerProjectsComponent } from './user-projects/user-projects.component';
 import { GuestGuard } from './service/guest.guard';
 
 const appRoutes: Routes = [
@@ -39,12 +39,16 @@ const appRoutes: Routes = [
     component: LoginEmailPageComponent,
     canActivate: [GuestGuard],
   },
-  { path: 'user-profile/:id', component: UserProfileComponent },
-  { path: 'edit-user-profile/:id', component: EditUserProfileComponent },
-  { path: 'user-cv/:id', component: UserCVComponent },
+  { path: 'user-profile', component: UserProfileComponent },
+  { path: 'edit-user-profile', component: EditUserProfileComponent },
+  { path: 'user-cv', component: UserCVComponent },
   { path: 'manager-profile/:id', component: ManagerProfileComponent },
   { path: 'edit-manager-profile/:id', component: EditManagerProfileComponent },
-  { path: 'manager-projects', component: ManagerProjectsComponent },
+  { path: 'user-projects',
+   component: ManagerProjectsComponent,
+    canActivate: [AuthGuard],
+    data: { allowedRoles: ['SOFTWARE_ENGINEER'] }
+  },
   {
     path: 'admin',
     component: AdminPageComponent,
@@ -61,7 +65,7 @@ const appRoutes: Routes = [
     path: 'admin-project',
     component: AdminProjectPageComponent,
     canActivate: [AuthGuard],
-    data: { allowedRoles: ['ADMIN'] },
+    data: { allowedRoles: ['ADMIN','PROJECT_MANAGER'] },
   },
   {
     path: 'admin-users',
@@ -73,7 +77,7 @@ const appRoutes: Routes = [
     path: 'add-engineer',
     component: AddEngineerPageComponent,
     canActivate: [AuthGuard],
-    data: { allowedRoles: ['ADMIN'] },
+    data: { allowedRoles: ['ADMIN','PROJECT_MANAGER'] },
   },
 ];
 

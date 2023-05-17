@@ -5,9 +5,9 @@ import { User } from '../model/user';
 import { UserService } from '../service/user.service';
 import { ProjectService } from '../service/project.service';
 @Component({
-  selector: 'app-manager-projects',
-  templateUrl: './manager-projects.component.html',
-  styleUrls: ['./manager-projects.component.css']
+  selector: 'app-user-projects',
+  templateUrl: './user-projects.component.html',
+  styleUrls: ['./user-projects.component.css']
 })
 export class ManagerProjectsComponent {
   
@@ -25,10 +25,7 @@ export class ManagerProjectsComponent {
     });
   }
   goBack() {
-    this.router.navigate(['/manager-profile/{id}', { id: this.route.snapshot.paramMap.get('id')}]);
+    this.router.navigate(['/user-profile']);
   }
-  EditCV()
-  {
-
-  }
+  
 }

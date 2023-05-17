@@ -17,7 +17,7 @@ export class EditUserProfileComponent {
 
   ngOnInit(): void {
     this.route.params.subscribe((params: Params) => {
-      this.userService.getUser(params['id']).subscribe(res => {
+      this.userService.getMyInfo().subscribe(res => {
         this.user = res;
       })
     });
