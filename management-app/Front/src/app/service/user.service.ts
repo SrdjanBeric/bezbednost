@@ -23,4 +23,12 @@ export class UserService {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.get<User>('http://localhost:8081/user/myInfo', { headers });
   }
+  update(user:User):Observable<any>
+{
+  const token = localStorage.getItem('access_token');
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  console.log(user);
+
+  return this.http.post('http://localhost:8081/user/update',user, { headers }) ;
+}
 }

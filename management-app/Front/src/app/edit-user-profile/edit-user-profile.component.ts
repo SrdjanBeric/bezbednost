@@ -23,7 +23,10 @@ export class EditUserProfileComponent {
     });
   }
   goBack() {
-    this.router.navigate(['/user-profile/{id}', { id: this.route.snapshot.paramMap.get('id')}]);
+    this.router.navigate(['/user-profile/']);
+  }
+  submit(){
+    this.userService.update(this.user);
   }
 
 }
