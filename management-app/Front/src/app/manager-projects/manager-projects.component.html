@@ -1,0 +1,33 @@
+<body>
+  <h3>Your projects</h3>
+  <form id="formlogin">
+    <table class="login_container">
+      <tr *ngFor="let project of projects" >
+        <td > 
+          {{project.name}}
+        </td>
+        <td>
+          {{project.startDate}}
+        </td>
+        <td>
+          {{project.endDate}}
+        </td>
+        <td>
+          {{project.taskDescription}}
+        </td>
+        <td>
+          <button (click)="goBack()">Add engineer</button>
+        </td>
+        <td>
+          <button (click)="goBack()">Remove engineer</button>
+        </td>
+      </tr>
+
+      <tr>
+        <td align="center">
+          <button class="btn" (click)="goBack()">Go Back</button>
+        </td>
+      </tr>
+    </table>
+  </form>
+</body>
