@@ -29,6 +29,6 @@ export class UserService {
   const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
   console.log(user);
 
-  return this.http.post('http://localhost:8081/user/update',user, { headers }) ;
+  return this.http.put<any>('http://localhost:8081/user/update',user, { headers }) ;
 }
 }
