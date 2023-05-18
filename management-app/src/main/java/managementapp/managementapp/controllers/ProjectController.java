@@ -60,6 +60,7 @@ public class ProjectController {
     }
 
     @GetMapping("/allManagerProject")
+    @PreAuthorize("hasAnyAuthority('PROJECT_MANAGER')")
     public List<Project> allManagerProject(){
        return projectService.getAllManagerProject();
     }

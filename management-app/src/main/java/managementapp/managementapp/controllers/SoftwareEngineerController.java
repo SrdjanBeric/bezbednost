@@ -74,6 +74,7 @@ public class SoftwareEngineerController {
     }
 
     @GetMapping("/allEngineerProject")
+    @PreAuthorize("hasAnyAuthority('SOFTWARE_ENGINEER')")
     public List<Project> getAllEngineerProjectProject(){
         return softwareEngineerProjectService.getAllEngineerProject();
     }
