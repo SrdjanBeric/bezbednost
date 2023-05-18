@@ -132,4 +132,17 @@ public class ProjectService {
         }
     }
 
+    public List<Project> getAllManagerProject() {
+        UserApp loggedInUser = userAppRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        List<Project> projectList = new ArrayList<>();
+        Optional<ProjectManager> projectManager = projectManagerRepository.findById(loggedInUser.getId());
+
+        if (projectManager.isPresent()) {
+            ProjectManager manager = projectManager.get();
+            projectList = projectRepository.findAllByProjectManager(manager);
+        }
+
+        return projectList;
+    }
+
 }

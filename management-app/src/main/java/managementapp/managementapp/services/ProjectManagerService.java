@@ -27,19 +27,5 @@ public class ProjectManagerService {
     private ProjectRepository projectRepository;
 
 
-//    public void addManagerToProject(Long projectId){
-//        UserApp loggedInUser = userAppRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-//        Optional<Project> projectOptional = projectRepository.findById(projectId);
-//        List<ProjectManager> projectManagers = projectManagerRepository.findAll();
-//        if(projectOptional.isPresent()){
-//            for (ProjectManager manager:projectManagers
-//                 ) {
-//                projectOptional.get().setProjectManager(manager);
-//            }
-//
-//        }
-//
-//
-//    }
 
 }

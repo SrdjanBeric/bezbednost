@@ -2,6 +2,7 @@ package managementapp.managementapp.controllers;
 
 import managementapp.managementapp.dtos.project.AddEngineerToProjectRequestDto;
 import managementapp.managementapp.dtos.project.ProjectDTO;
+import managementapp.managementapp.models.Project;
 import managementapp.managementapp.services.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/project")
@@ -55,5 +57,10 @@ public class ProjectController {
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return ResponseEntity.status(HttpStatus.CREATED).body("Project is successfully  created.");
+    }
+
+    @GetMapping("/allManagerProject")
+    public List<Project> allManagerProject(){
+       return projectService.getAllManagerProject();
     }
 }

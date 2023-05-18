@@ -1,11 +1,9 @@
 package managementapp.managementapp.services;
 
-import managementapp.managementapp.models.Project;
-import managementapp.managementapp.models.SoftwareEngineer;
-import managementapp.managementapp.models.SoftwareEngineerProject;
-import managementapp.managementapp.models.UserApp;
+import managementapp.managementapp.models.*;
 import managementapp.managementapp.repositories.ProjectRepository;
 import managementapp.managementapp.repositories.SoftwareEngineerProjectRepository;
+import managementapp.managementapp.repositories.SoftwareEngineerRepository;
 import managementapp.managementapp.repositories.UserAppRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SoftwareEngineerProjectService {
@@ -29,18 +28,34 @@ public class SoftwareEngineerProjectService {
     @Autowired
     private ProjectService projectService;
 
-//    public List<Project> getProjects() {
-//        UserApp loggedInUser = userAppRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-//        List<Project> projects = new ArrayList<>();
-//
-//        if (loggedInUser.getRole().getName().equals("SOFTWARE_ENGINEER")) {
-//            projects = projectRepository.findAllBySoftwareEngineerId(loggedInUser.getId());
-//        } else {
-//            projects = projectRepository.findAll();
-//        }
-//
-//        return projects;
-//    }
+    @Autowired
+    private SoftwareEngineerRepository softwareEngineerRepository;
+
+    public List<Project> getAllProjects() {
+        UserApp loggedInUser = userAppRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        List<Project> projects = new ArrayList<>();
+
+        if (loggedInUser.getRole().getName().equals("SOFTWARE_ENGINEER")) {
+            projects = projectRepository.findAllBySoftwareEngineerId(loggedInUser.getId());
+        } else {
+            projects = projectRepository.findAll();
+        }
+
+        return projects;
+    }
+
+    public List<Project> getAllEngineerProject() {
+        UserApp loggedInUser = userAppRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        List<Project> projectList = new ArrayList<>();
+        Optional<SoftwareEngineer> projectEngineer = softwareEngineerRepository.findById(loggedInUser.getId());
+
+        if (projectEngineer.isPresent()) {
+            SoftwareEngineer engineer = projectEngineer.get();
+            projectList = softwareEngineerProjectRepository.findAllByProjectEngineer(engineer);
+        }
+
+        return projectList;
+    }
 
 
     //nastaviti ovo jos..

@@ -1,6 +1,9 @@
 package managementapp.managementapp.controllers;
 
 import managementapp.managementapp.dtos.project.UserAppDto;
+import managementapp.managementapp.models.Project;
+import managementapp.managementapp.models.SoftwareEngineerProject;
+import managementapp.managementapp.services.SoftwareEngineerProjectService;
 import managementapp.managementapp.services.SoftwareEngineerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +19,9 @@ public class SoftwareEngineerController {
 
     @Autowired
     public final SoftwareEngineerService softwareEngineerService;
+
+    @Autowired
+    public  SoftwareEngineerProjectService softwareEngineerProjectService;
 
 
     public SoftwareEngineerController(SoftwareEngineerService softwareEngineerService) {
@@ -65,5 +71,10 @@ public class SoftwareEngineerController {
         }catch(Exception e){
             return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/allEngineerProject")
+    public List<Project> getAllEngineerProjectProject(){
+        return softwareEngineerProjectService.getAllEngineerProject();
     }
 }
