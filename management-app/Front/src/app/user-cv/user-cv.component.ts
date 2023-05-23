@@ -10,19 +10,20 @@ import { UserService } from '../service/user.service';
 })
 export class UserCVComponent {
   
-  public user: User=new User();
+  public skills: string[]=[];
 
   constructor(private userService: UserService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
     this.route.params.subscribe((params: Params) => {
-      this.userService.getUser(params['id']).subscribe(res => {
-        this.user = res;
+      this.userService.getSkills().subscribe(res => {
+        this.skills = res;
+        console.log(this.skills);
       })
     });
   }
   goBack() {
-    this.router.navigate(['/user-profile/{id}', { id: this.route.snapshot.paramMap.get('id')}]);
+    this.router.navigate(['/user-profile/']);
   }
   EditCV()
   {

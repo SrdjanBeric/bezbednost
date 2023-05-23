@@ -31,4 +31,10 @@ export class UserService {
 
   return this.http.put<any>('http://localhost:8081/user/update',user, { headers }) ;
 }
+getSkills(): Observable<any[]> {
+  const token = localStorage.getItem('access_token');
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  return this.http.get<any[]>('http://localhost:8081/softwareEngineer/allSkills',{headers});
+}
+
 }

@@ -19,7 +19,7 @@ export class ManagerProjectsComponent {
   }
 
   loadAllUsers() {
-    this.projectService.allUsers().subscribe((projectResponse) => {
+    this.projectService.engineerProjects().subscribe((projectResponse) => {
       this.projects = projectResponse;
       console.log(this.projects);
     });
