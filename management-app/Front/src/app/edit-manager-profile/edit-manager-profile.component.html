@@ -1,0 +1,37 @@
+<body>
+  <h3>Profile info</h3>
+  <form id="formlogin">
+    <table class="login_container">
+      <tr>
+        <td align="center">
+          <div class="row">
+            <p class="block">Email:</p>
+            <input type="text" name="email" class="block" placeholder="{{user?.email}}"  [(ngModel)]="user.email"/>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td align="center">
+          <div class="row">
+            <p class="block">Password:</p>
+            <input type="text" class="block" name="password" placeholder="{{user?.password}}" [(ngModel)]="user.password"/>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td align="center">
+          <div class="row">
+            <p class="block">Username:</p>
+            <input type="text" name="name" class="block" placeholder="{{user?.username}}"  [(ngModel)]="user.username"/>
+          </div>
+        </td>
+      </tr>
+
+      <tr>
+        <td align="center">
+          <button class="btn" (click)="goBack()" >Submit</button>
+        </td>
+      </tr>
+    </table>
+  </form>
+</body>

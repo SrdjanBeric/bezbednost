@@ -11,5 +11,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UserTokenState {
     private String accessToken;
+    private String refreshToken;
     private int expiresIn;
 }

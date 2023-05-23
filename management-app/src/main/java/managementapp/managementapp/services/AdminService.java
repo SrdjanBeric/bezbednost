@@ -57,8 +57,8 @@ public class AdminService {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("User with id: " + userId + " is already active.");
             }
-            authenticationService.sendVerificationEmail(userApp);
-            return new ResponseEntity<>(HttpStatus.OK);
+            String activationLink = authenticationService.sendVerificationEmail(userApp);
+            return new ResponseEntity<>(activationLink, HttpStatus.OK);
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("An error occurred while activating user with id: " + userId);

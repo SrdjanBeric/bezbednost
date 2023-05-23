@@ -1,0 +1,21 @@
+<body>
+  <h3>Your CV</h3>
+  <form id="formlogin">
+    <table class="login_container">
+      <tr>
+        <td *ngFor="let skill of user.skills" class="box">
+          {{skill}}
+        </td>
+      </tr>
+
+      <tr>
+        <td align="center">
+          <button class="btn" (click)="goBack()" >Go Back</button>
+        </td>
+        <td align="center">
+          <button class="btn" (click)="EditCV()" >Edit CV</button>
+        </td>
+      </tr>
+    </table>
+  </form>
+</body>

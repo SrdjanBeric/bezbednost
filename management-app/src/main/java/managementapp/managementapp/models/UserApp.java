@@ -48,8 +48,9 @@ public class UserApp implements UserDetails {
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$", message = "Password must contain at least one lowercase letter, one uppercase letter and one digit")
     private String password;
 
+    private String passwordSalt;
+
     @Column
-    @NotBlank
     private String address;
 
     @Column

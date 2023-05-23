@@ -28,6 +28,16 @@ public class ProjectController {
         }
     }
 
+    @GetMapping("{projectId}/engineer/available")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'PROJECT_MANAGER')")
+    public ResponseEntity<?> getAvailableEngineers(@PathVariable Long projectId){
+        try{
+            return projectService.getAvailableEngineersForProject(projectId);
+        }catch (Exception e){
+            return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @PostMapping("/addEngineer")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'PROJECT_MANAGER')")
     public ResponseEntity<?> addEngineer(@RequestBody @Valid AddEngineerToProjectRequestDto addEngineerToProjectRequestDto){

@@ -109,6 +109,44 @@ public class ProjectService {
         return false;
     }
 
+
+    public ResponseEntity<?> getAvailableEngineersForProject(Long projectId){
+        try{
+            UserApp loggedInUser = userAppRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+            Project project = projectRepository.findById(projectId).orElse(null);
+            if(project == null){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Project does not exist.");
+            }
+            if(loggedInUser.getRole().getName().equals("PROJECT_MANAGER") && project.getProjectManager().getId() != loggedInUser.getId()){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("You do not have permissions to access this project.");
+            }
+            List<UserApp> allUsers = userAppRepository.findUserAppsByActive(true);
+            List<UserApp> availableUsers = new ArrayList<>();
+            for (UserApp userIterator : allUsers){
+                boolean exists = false;
+                if(!userIterator.getRole().getName().equals("SOFTWARE_ENGINEER")){
+                    continue;
+                }
+                for(SoftwareEngineerProject task : project.getTaskDescriptions()){
+                    if(task.getSoftwareEngineer().getId() == userIterator.getId()){
+                        exists = true;
+                        break;
+                    }
+                }
+                if(!exists){
+                    availableUsers.add(userIterator);
+                }
+            }
+            return new ResponseEntity<>(availableUsers, HttpStatus.OK);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred while removing engineer from project.");
+        }
+    }
+
+
     public void createProject(ProjectDTO projectDTO){
         UserApp loggedInUser = userAppRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         Optional<Project>projectOptional = projectRepository.findByName(projectDTO.getName());

@@ -30,6 +30,24 @@ public class UserAppController {
         }
     }
 
+    @GetMapping("/{userId}")
+    public ResponseEntity<?> getById(@PathVariable Long userId){
+        try{
+            return userAppService.getById(userId);
+        }catch (Exception e){
+            return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/myInfo")
+    public ResponseEntity<?> myInfo(){
+        try{
+            return userAppService.getMyInfo();
+        }catch (Exception e){
+            return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @PutMapping("/update")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'HUMAN_RESOURCES_MANAGER', 'SOFTWARE_ENGINEER', 'PROJECT_MANAGER')")
     public ResponseEntity<?>updateUser(@RequestBody UserAppDto userApp){

@@ -32,6 +32,19 @@ public class UserAppService implements UserDetailsService {
         return new ResponseEntity<>(allUsers, HttpStatus.OK);
     }
 
+    public ResponseEntity<?> getById(Long userId){
+        UserApp userApp = userAppRepository.findById(userId).orElse(null);
+        if(userApp == null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("User with id '" + userId + "' does not exist.");
+        }
+        if(!userApp.getActive()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("User with id '" + userId + "' is not active.");
+        }
+        return new ResponseEntity<>(userApp, HttpStatus.OK);
+    }
+
     //update nesto zeza
     ///i skroz naopacke radi
     // pogledati jos malo
@@ -39,35 +52,12 @@ public class UserAppService implements UserDetailsService {
         UserApp loggedInUser = userAppRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 //        Role role = roleRepository.findByName(updateduserApp.getRoleName());
             loggedInUser.setUsername(updateduserApp.getUsername());
-            loggedInUser.setPassword(passwordEncoder.encode((updateduserApp.getPassword())));
+            loggedInUser.setPassword(passwordEncoder.encode((updateduserApp.getPassword() + loggedInUser.getPasswordSalt())));
             loggedInUser.setEmail(updateduserApp.getEmail());
             loggedInUser.setAddress(updateduserApp.getAddress());
 //            loggedInUser.setRole(role);
             loggedInUser.setActive(updateduserApp.getActive());
-
-
             userAppRepository.save(loggedInUser);
-
-
-
-        //        Optional<UserApp> userApp = userAppRepository.findById(loggedInUser.getId());
-//        if(userApp.isPresent()){
-//            UserApp userApp1 = new UserApp();
-//            userApp1.setUsername(updateduserApp.getUsername());
-//            userApp1.setPassword(updateduserApp.getPassword());
-//            userApp1.setEmail(updateduserApp.getEmail());
-//            userApp1.setAddress(updateduserApp.getAddress());
-//            userApp1.setRole(updateduserApp.getRole());
-//            userApp1.setActive(updateduserApp.getActive());
-//
-//            return userAppRepository.save(userApp1);
-//        }
-//        else{
-//             ResponseEntity.status(HttpStatus.BAD_REQUEST)
-//                    .body("User with id" + loggedInUser.getId() + "does not found");
-//        }
-//
-//        return updateduserApp;
     }
 
     public UserApp save(UserApp userApp){
@@ -76,6 +66,11 @@ public class UserAppService implements UserDetailsService {
 
     public boolean userExistsByUsernameOrEmail(String username, String email) {
         return userAppRepository.existsByUsernameOrEmail(username, email);
+    }
+
+    public ResponseEntity<?>  getMyInfo(){
+        UserApp loggedInUser = userAppRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        return ResponseEntity.status(HttpStatus.OK).body(loggedInUser);
     }
 
     @Override
