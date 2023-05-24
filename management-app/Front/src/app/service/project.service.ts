@@ -1,4 +1,4 @@
-import { HttpClient,HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Project } from '../model/project';
@@ -11,7 +11,7 @@ export class ProjectService {
   allUsers(): Observable<any[]> {
     const token = localStorage.getItem('access_token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.get<any[]>('http://localhost:8081/project/all', {
+    return this.http.get<any[]>('https://localhost:8081/project/all', {
       headers,
     });
   }
@@ -26,7 +26,7 @@ export class ProjectService {
     const token = localStorage.getItem('access_token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.post<any[]>(
-      'http://localhost:8081/project/addEngineer',
+      'https://localhost:8081/project/addEngineer',
       requestDto,
       {
         headers,
@@ -38,7 +38,7 @@ export class ProjectService {
     const token = localStorage.getItem('access_token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.get<any[]>(
-      `http://localhost:8081/project/${projectId}/engineer/available`,
+      `https://localhost:8081/project/${projectId}/engineer/available`,
       { headers }
     );
   }
@@ -47,12 +47,12 @@ export class ProjectService {
     const token = localStorage.getItem('access_token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.delete<any[]>(
-      `http://localhost:8081/project/${projectId}/removeEngineer/${softwareEngineerId}`,
+      `https://localhost:8081/project/${projectId}/removeEngineer/${softwareEngineerId}`,
       { headers }
     );
   }
   getProjects(): Observable<any[]> {
-    return this.http.get<any[]>('http://localhost:8081/project/all');
+    return this.http.get<any[]>('https://localhost:8081/project/all');
   }
   engineerProjects(): Observable<any[]> {
     const token = localStorage.getItem('access_token');

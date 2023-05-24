@@ -8,7 +8,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginPasswordPageComponent } from './login-password-page/login-password-page.component';
 import { LoginEmailPageComponent } from './login-email-page/login-email-page.component';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import {
+  HTTP_INTERCEPTORS,
+  HttpClient,
+  HttpClientModule,
+} from '@angular/common/http';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { EditUserProfileComponent } from './edit-user-profile/edit-user-profile.component';
 import { UserCVComponent } from './user-cv/user-cv.component';
@@ -22,6 +26,9 @@ import { ManagerProfileComponent } from './manager-profile/manager-profile.compo
 import { EditManagerProfileComponent } from './edit-manager-profile/edit-manager-profile.component';
 import { ManagerProjectsComponent } from './user-projects/user-projects.component';
 import { GuestGuard } from './service/guest.guard';
+import { FrontTokenExtractComponent } from './front-token-extract/front-token-extract.component';
+import { EditAdminProfileComponent } from './edit-admin-profile/edit-admin-profile.component';
+import { AuthInterceptor } from './service/interceptor';
 
 const appRoutes: Routes = [
   {
@@ -48,6 +55,12 @@ const appRoutes: Routes = [
    component: ManagerProjectsComponent,
     canActivate: [AuthGuard],
     data: { allowedRoles: ['SOFTWARE_ENGINEER'] }
+  },
+  {
+    path: 'edit-admin-profile',
+    component: EditAdminProfileComponent,
+    canActivate: [AuthGuard],
+    data: { allowedRoles: ['ADMIN'] },
   },
   {
     path: 'admin',
@@ -79,6 +92,10 @@ const appRoutes: Routes = [
     canActivate: [AuthGuard],
     data: { allowedRoles: ['ADMIN','PROJECT_MANAGER'] },
   },
+  {
+    path: 'login/:token',
+    component: FrontTokenExtractComponent,
+  },
 ];
 
 @NgModule({
@@ -98,6 +115,8 @@ const appRoutes: Routes = [
     ManagerProfileComponent,
     EditManagerProfileComponent,
     ManagerProjectsComponent,
+    FrontTokenExtractComponent,
+    EditAdminProfileComponent,
   ],
   imports: [
     BrowserModule,
@@ -108,7 +127,13 @@ const appRoutes: Routes = [
     RouterModule.forRoot(appRoutes),
     HttpClientModule,
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
