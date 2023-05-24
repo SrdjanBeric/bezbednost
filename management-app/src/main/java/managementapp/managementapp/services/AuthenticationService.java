@@ -146,9 +146,10 @@ public class AuthenticationService {
             }
             UUID loginToken = loginTokenService.generateLoginToken(userApp);
             //TODO send this token via email
-            String loginLink = "http://localhost:8081/auth/login?token="+loginToken;
+            //String loginLink = "https://localhost:8081/auth/login?token="+loginToken;
+            String frontendPageRedirection = "http://localhost:4200/login/" + loginToken;
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(loginLink);
+                    .body(frontendPageRedirection);
         }catch (AuthenticationException e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("An error occurred while trying to send a token for login.");
