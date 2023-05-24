@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
@@ -28,6 +28,7 @@ export class AuthService {
         localStorage.setItem('refresh_token', response.refreshToken);
 
         const role = this.getRole(); // Get the role value
+
         console.log(`Ovo je rola nakon logovanja: ` + role); // Print the role value for testing
       })
     );
@@ -64,6 +65,26 @@ export class AuthService {
     return null;
   }
 
+  getId() {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      const base64Url = token!.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+          })
+          .join('')
+      );
+
+      const payload = JSON.parse(jsonPayload);
+      return payload.id;
+    }
+    return null;
+  }
+
   loginViaToken(token: string): Observable<any> {
     const url = `https://localhost:8081/auth/login?token=${token}`;
     return this.http.get<any>(url);
@@ -89,5 +110,16 @@ export class AuthService {
     console.log(this.getRole());
     console.log(`uspesno izlogovan`);
     this.router.navigate(['/login-email']);
+  }
+
+  refreshToken(): Observable<any> {
+    const refreshToken = localStorage.getItem('refresh_token');
+    if (refreshToken) {
+      // Make a request to the server to refresh the access token using the refresh token
+      const refreshUrl = 'https://localhost:8081/auth/refreshToken';
+      return this.http.post(refreshUrl, { refreshToken });
+    }
+    // If there is no refresh token available, return an observable with an error
+    return throwError('No refresh token available');
   }
 }

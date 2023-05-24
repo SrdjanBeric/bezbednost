@@ -8,7 +8,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginPasswordPageComponent } from './login-password-page/login-password-page.component';
 import { LoginEmailPageComponent } from './login-email-page/login-email-page.component';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import {
+  HTTP_INTERCEPTORS,
+  HttpClient,
+  HttpClientModule,
+} from '@angular/common/http';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { EditUserProfileComponent } from './edit-user-profile/edit-user-profile.component';
 import { UserCVComponent } from './user-cv/user-cv.component';
@@ -23,6 +27,8 @@ import { EditManagerProfileComponent } from './edit-manager-profile/edit-manager
 import { ManagerProjectsComponent } from './manager-projects/manager-projects.component';
 import { GuestGuard } from './service/guest.guard';
 import { FrontTokenExtractComponent } from './front-token-extract/front-token-extract.component';
+import { EditAdminProfileComponent } from './edit-admin-profile/edit-admin-profile.component';
+import { AuthInterceptor } from './service/interceptor';
 
 const appRoutes: Routes = [
   {
@@ -46,6 +52,12 @@ const appRoutes: Routes = [
   { path: 'manager-profile/:id', component: ManagerProfileComponent },
   { path: 'edit-manager-profile/:id', component: EditManagerProfileComponent },
   { path: 'manager-projects', component: ManagerProjectsComponent },
+  {
+    path: 'edit-admin-profile',
+    component: EditAdminProfileComponent,
+    canActivate: [AuthGuard],
+    data: { allowedRoles: ['ADMIN'] },
+  },
   {
     path: 'admin',
     component: AdminPageComponent,
@@ -100,6 +112,7 @@ const appRoutes: Routes = [
     EditManagerProfileComponent,
     ManagerProjectsComponent,
     FrontTokenExtractComponent,
+    EditAdminProfileComponent,
   ],
   imports: [
     BrowserModule,
@@ -110,7 +123,13 @@ const appRoutes: Routes = [
     RouterModule.forRoot(appRoutes),
     HttpClientModule,
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

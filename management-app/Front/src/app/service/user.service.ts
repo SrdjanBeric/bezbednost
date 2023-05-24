@@ -19,4 +19,20 @@ export class UserService {
       headers,
     });
   }
+
+  updateUser(user: any) {
+    const token = localStorage.getItem('access_token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.put<any>('https://localhost:8081/user/update', user, {
+      headers,
+    });
+  }
+
+  myInfo() {
+    const token = localStorage.getItem('access_token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<any>('https://localhost:8081/user/myInfo', {
+      headers,
+    });
+  }
 }
