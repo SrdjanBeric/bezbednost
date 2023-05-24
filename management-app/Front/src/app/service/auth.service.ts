@@ -8,13 +8,13 @@ import { Router } from '@angular/router';
   providedIn: 'root',
 })
 export class AuthService {
-  private loginUrl = 'http://localhost:8081/auth/login'; // ?
-  private loginUrlEmail = 'http://localhost:8081/auth/loginViaEmail';
+  private loginUrl = 'https://localhost:8081/auth/login'; // ?
+  private loginUrlEmail = 'https://localhost:8081/auth/loginViaEmail';
 
   constructor(private http: HttpClient, private router: Router) {}
 
   signup(registrationRequest: any): Observable<any> {
-    const url = 'http://localhost:8081/auth/signup';
+    const url = 'https://localhost:8081/auth/signup';
     return this.http.post(url, registrationRequest);
   }
 
@@ -25,7 +25,7 @@ export class AuthService {
         console.log(response);
 
         localStorage.setItem('access_token', response.accessToken);
-        localStorage.setItem('refresh_token', response.accessToken);
+        localStorage.setItem('refresh_token', response.refreshToken);
 
         const role = this.getRole(); // Get the role value
         console.log(`Ovo je rola nakon logovanja: ` + role); // Print the role value for testing
@@ -62,6 +62,11 @@ export class AuthService {
       return payload.role;
     }
     return null;
+  }
+
+  loginViaToken(token: string): Observable<any> {
+    const url = `https://localhost:8081/auth/login?token=${token}`;
+    return this.http.get<any>(url);
   }
 
   isLoggedIn(): boolean {

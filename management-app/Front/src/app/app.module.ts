@@ -22,6 +22,7 @@ import { ManagerProfileComponent } from './manager-profile/manager-profile.compo
 import { EditManagerProfileComponent } from './edit-manager-profile/edit-manager-profile.component';
 import { ManagerProjectsComponent } from './manager-projects/manager-projects.component';
 import { GuestGuard } from './service/guest.guard';
+import { FrontTokenExtractComponent } from './front-token-extract/front-token-extract.component';
 
 const appRoutes: Routes = [
   {
@@ -75,6 +76,10 @@ const appRoutes: Routes = [
     canActivate: [AuthGuard],
     data: { allowedRoles: ['ADMIN'] },
   },
+  {
+    path: 'login/:token',
+    component: FrontTokenExtractComponent,
+  },
 ];
 
 @NgModule({
@@ -94,6 +99,7 @@ const appRoutes: Routes = [
     ManagerProfileComponent,
     EditManagerProfileComponent,
     ManagerProjectsComponent,
+    FrontTokenExtractComponent,
   ],
   imports: [
     BrowserModule,
