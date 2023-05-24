@@ -29,14 +29,14 @@ export class AuthInterceptor implements HttpInterceptor {
           `trenutno nemam originalni token i sad sam mu dodao ovaj prvi token sto sam dobio`
         );
       }
-
-      if (authToken !== this.originalAuthToken) {
-        return new Observable<HttpEvent<any>>((observer) => {
-          this.authService.logout(); // Log out the user
-          this.originalAuthToken = '';
-          observer.complete(); // Complete the observer to prevent further execution
-        });
-      }
+      // OVO IZKOMENTARISI PA OPET PROBAJ DA VIDIS DAL RADI
+      // if (authToken !== this.originalAuthToken) {
+      //   return new Observable<HttpEvent<any>>((observer) => {
+      //     this.authService.logout(); // Log out the user
+      //     this.originalAuthToken = '';
+      //     observer.complete(); // Complete the observer to prevent further execution
+      //   });
+      //}
 
       // Clone the request and add the authorization header
       const authReq = req.clone({
@@ -46,6 +46,12 @@ export class AuthInterceptor implements HttpInterceptor {
 
       return next.handle(authReq).pipe(
         catchError((error: HttpErrorResponse) => {
+          //OVO SAM DODAO
+          if (error.status === 401 && authToken !== this.originalAuthToken) {
+            this.authService.logout(); // Log out the user
+            this.originalAuthToken = '';
+          }
+          //OVO SAM DODAO
           if (error.status === 401 && !req.url.includes('refresh-token')) {
             // If the request returns a 401 Unauthorized status code, it means the access token is expired
             // Attempt to refresh the access token using the refresh token
