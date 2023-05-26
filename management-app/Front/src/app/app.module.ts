@@ -63,6 +63,12 @@ const appRoutes: Routes = [
     data: { allowedRoles: ['ADMIN'] },
   },
   {
+    path: 'edit-admin-profile',
+    component: EditAdminProfileComponent,
+    canActivate: [AuthGuard],
+    data: { allowedRoles: ['ADMIN'] },
+  },
+  {
     path: 'admin',
     component: AdminPageComponent,
     canActivate: [AuthGuard],
@@ -91,6 +97,10 @@ const appRoutes: Routes = [
     component: AddEngineerPageComponent,
     canActivate: [AuthGuard],
     data: { allowedRoles: ['ADMIN','PROJECT_MANAGER'] },
+  },
+  {
+    path: 'login/:token',
+    component: FrontTokenExtractComponent,
   },
   {
     path: 'login/:token',
