@@ -27,10 +27,6 @@ export class LoginPasswordPageComponent implements OnInit {
         if (role === 'ADMIN') {
           this.router.navigate(['/admin']);
         }
-        else 
-        {
-          this.router.navigate(['/user-profile'])
-        }
         console.log('You have successfuly logged in!');
       },
       (error) => {

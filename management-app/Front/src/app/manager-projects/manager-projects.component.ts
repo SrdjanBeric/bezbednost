@@ -5,9 +5,9 @@ import { User } from '../model/user';
 import { UserService } from '../service/user.service';
 import { ProjectService } from '../service/project.service';
 @Component({
-  selector: 'app-user-projects',
-  templateUrl: './user-projects.component.html',
-  styleUrls: ['./user-projects.component.css']
+  selector: 'app-manager-projects',
+  templateUrl: './manager-projects.component.html',
+  styleUrls: ['./manager-projects.component.css']
 })
 export class ManagerProjectsComponent {
   
@@ -19,13 +19,16 @@ export class ManagerProjectsComponent {
   }
 
   loadAllUsers() {
-    this.projectService.engineerProjects().subscribe((projectResponse) => {
+    this.projectService.allUsers().subscribe((projectResponse) => {
       this.projects = projectResponse;
       console.log(this.projects);
     });
   }
   goBack() {
-    this.router.navigate(['/user-profile']);
+    this.router.navigate(['/manager-profile/{id}', { id: this.route.snapshot.paramMap.get('id')}]);
   }
-  
+  EditCV()
+  {
+
+  }
 }

@@ -2,29 +2,19 @@
   <h3>Your CV</h3>
   <form id="formlogin">
     <table class="login_container">
-      <tr *ngFor="let skill of skills">
-        <td>
-          <input type="text" value="{{skill}}" style="width: 80%;"/>
-          <button (click)="removeSkill()" >Remove skill</button>
+      <tr>
+        <td *ngFor="let skill of user.skills" class="box">
+          {{skill}}
         </td>
       </tr>
+
       <tr>
-        <td>
-          <input type="text" (keyup)="onKey($event)"/>
-          <button (click)="addSkill()" >Add skill</button>
-        </td>
-      </tr>
-      <tr>
-      <div>
         <td align="center">
-          <button  (click)="goBack()" >Go Back</button>
+          <button class="btn" (click)="goBack()" >Go Back</button>
         </td>
-        <td>
-          <button>
-            <input type="file" (change)="onFileSelected($event)">
-          </button>
+        <td align="center">
+          <button class="btn" (click)="EditCV()" >Edit CV</button>
         </td>
-      </div>
       </tr>
     </table>
   </form>

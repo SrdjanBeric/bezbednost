@@ -10,10 +10,6 @@ import java.io.IOException;
 public class FileUploadService {
 
     public void uploadFile(MultipartFile file) throws IOException {
-        try {
-            File destFile = new File("C:\\"+file.getOriginalFilename());
-            file.transferTo(destFile);
-        } catch (IOException e) {
-            throw new IOException("File not found!"+file.getOriginalFilename());
-        }    }
+        file.transferTo(new File("C:\\Users\\Korisnik\\Desktop\\bezbednost\\bezbednost\\management-app\\FolderUpload\\" + file.getOriginalFilename()));
+    }
 }

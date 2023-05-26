@@ -9,17 +9,14 @@ export class AdminService {
   getUsersToActivate(): Observable<any[]> {
     const token = localStorage.getItem('access_token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.get<any[]>(
-      'https://localhost:8081/admin/usersToActivate',
-      {
-        headers,
-      }
-    );
+    return this.http.get<any[]>('http://localhost:8081/admin/usersToActivate', {
+      headers,
+    });
   }
 
   activateUser(userId: number): Observable<any> {
     console.log('Here is the userID ' + userId);
-    const url = `https://localhost:8081/admin/activateUser/${userId}`;
+    const url = `http://localhost:8081/admin/activateUser/${userId}`;
     const token = localStorage.getItem('access_token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.patch<any>(url, null, { headers });

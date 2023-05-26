@@ -10,7 +10,14 @@
           </div>
         </td>
       </tr>
-      
+      <tr>
+        <td align="center">
+          <div class="row">
+            <p class="block">Password:</p>
+            <input type="text" class="block" name="password" placeholder="{{user?.password}}" [(ngModel)]="user.password"/>
+          </div>
+        </td>
+      </tr>
       <tr>
         <td align="center">
           <div class="row">
@@ -19,14 +26,10 @@
           </div>
         </td>
       </tr>
+
       <tr>
         <td align="center">
-          <button class="btn" (click)="submit()" >Submit</button>
-        </td>
-      </tr>
-      <tr>
-        <td align="center">
-          <button class="btn" (click)="goBack()" >Go back</button>
+          <button class="btn" (click)="goBack()" >Submit</button>
         </td>
       </tr>
     </table>
