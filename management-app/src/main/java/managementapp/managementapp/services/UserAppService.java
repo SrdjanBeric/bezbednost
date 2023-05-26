@@ -52,7 +52,7 @@ public class UserAppService implements UserDetailsService {
         UserApp loggedInUser = userAppRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 //        Role role = roleRepository.findByName(updateduserApp.getRoleName());
             loggedInUser.setUsername(updateduserApp.getUsername());
-            loggedInUser.setPassword(passwordEncoder.encode((updateduserApp.getPassword() + loggedInUser.getPasswordSalt())));
+ //           loggedInUser.setPassword(passwordEncoder.encode((updateduserApp.getPassword() + loggedInUser.getPasswordSalt())));
             loggedInUser.setEmail(updateduserApp.getEmail());
             loggedInUser.setAddress(updateduserApp.getAddress());
 //            loggedInUser.setRole(role);
