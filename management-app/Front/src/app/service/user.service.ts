@@ -20,8 +20,6 @@ export class UserService {
     });
   }
 
-
-
   updateUser(user: any) {
     const token = localStorage.getItem('access_token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
