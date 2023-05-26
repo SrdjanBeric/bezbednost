@@ -2,7 +2,6 @@ package managementapp.managementapp.controllers;
 
 import managementapp.managementapp.dtos.project.UserAppDto;
 import managementapp.managementapp.models.Project;
-import managementapp.managementapp.models.SoftwareEngineerProject;
 import managementapp.managementapp.services.SoftwareEngineerProjectService;
 import managementapp.managementapp.services.SoftwareEngineerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +43,7 @@ public class SoftwareEngineerController {
     @PreAuthorize("hasAnyAuthority('SOFTWARE_ENGINEER')")
     public ResponseEntity<?>updateSkills(@RequestBody List<String> updateSkills){
         try{
+            System.out.println(updateSkills);
             softwareEngineerService.skillsUpdate(updateSkills);
             return new ResponseEntity<>(HttpStatus.OK);
         }catch(Exception e){

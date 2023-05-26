@@ -8,7 +8,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginPasswordPageComponent } from './login-password-page/login-password-page.component';
 import { LoginEmailPageComponent } from './login-email-page/login-email-page.component';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import {
+  HTTP_INTERCEPTORS,
+  HttpClient,
+  HttpClientModule,
+} from '@angular/common/http';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { EditUserProfileComponent } from './edit-user-profile/edit-user-profile.component';
 import { UserCVComponent } from './user-cv/user-cv.component';
@@ -20,8 +24,11 @@ import { AdminAllUsersComponent } from './admin-all-users/admin-all-users.compon
 import { AddEngineerPageComponent } from './add-engineer-page/add-engineer-page.component';
 import { ManagerProfileComponent } from './manager-profile/manager-profile.component';
 import { EditManagerProfileComponent } from './edit-manager-profile/edit-manager-profile.component';
-import { ManagerProjectsComponent } from './manager-projects/manager-projects.component';
+import { ManagerProjectsComponent } from './user-projects/user-projects.component';
 import { GuestGuard } from './service/guest.guard';
+import { FrontTokenExtractComponent } from './front-token-extract/front-token-extract.component';
+import { EditAdminProfileComponent } from './edit-admin-profile/edit-admin-profile.component';
+import { AuthInterceptor } from './service/interceptor';
 
 const appRoutes: Routes = [
   {
@@ -39,12 +46,22 @@ const appRoutes: Routes = [
     component: LoginEmailPageComponent,
     canActivate: [GuestGuard],
   },
-  { path: 'user-profile/:id', component: UserProfileComponent },
-  { path: 'edit-user-profile/:id', component: EditUserProfileComponent },
-  { path: 'user-cv/:id', component: UserCVComponent },
+  { path: 'user-profile', component: UserProfileComponent },
+  { path: 'edit-user-profile', component: EditUserProfileComponent },
+  { path: 'user-cv', component: UserCVComponent },
   { path: 'manager-profile/:id', component: ManagerProfileComponent },
   { path: 'edit-manager-profile/:id', component: EditManagerProfileComponent },
-  { path: 'manager-projects', component: ManagerProjectsComponent },
+  { path: 'user-projects',
+   component: ManagerProjectsComponent,
+    canActivate: [AuthGuard],
+    data: { allowedRoles: ['SOFTWARE_ENGINEER'] }
+  },
+  {
+    path: 'edit-admin-profile',
+    component: EditAdminProfileComponent,
+    canActivate: [AuthGuard],
+    data: { allowedRoles: ['ADMIN'] },
+  },
   {
     path: 'admin',
     component: AdminPageComponent,
@@ -61,7 +78,7 @@ const appRoutes: Routes = [
     path: 'admin-project',
     component: AdminProjectPageComponent,
     canActivate: [AuthGuard],
-    data: { allowedRoles: ['ADMIN'] },
+    data: { allowedRoles: ['ADMIN','PROJECT_MANAGER'] },
   },
   {
     path: 'admin-users',
@@ -73,7 +90,11 @@ const appRoutes: Routes = [
     path: 'add-engineer',
     component: AddEngineerPageComponent,
     canActivate: [AuthGuard],
-    data: { allowedRoles: ['ADMIN'] },
+    data: { allowedRoles: ['ADMIN','PROJECT_MANAGER'] },
+  },
+  {
+    path: 'login/:token',
+    component: FrontTokenExtractComponent,
   },
 ];
 
@@ -94,6 +115,8 @@ const appRoutes: Routes = [
     ManagerProfileComponent,
     EditManagerProfileComponent,
     ManagerProjectsComponent,
+    FrontTokenExtractComponent,
+    EditAdminProfileComponent,
   ],
   imports: [
     BrowserModule,
@@ -104,7 +127,13 @@ const appRoutes: Routes = [
     RouterModule.forRoot(appRoutes),
     HttpClientModule,
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

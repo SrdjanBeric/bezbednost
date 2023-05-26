@@ -34,3 +34,4 @@ management-app/Front/tsconfig.json
 management-app/src/main/resources/application.properties
 management-app/Front/src/test.ts
 management-app/Front/src/polyfills.ts
+management-app/src/main/resources/application.properties

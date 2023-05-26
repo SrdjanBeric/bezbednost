@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ProjectService } from '../service/project.service';
 import { Router } from '@angular/router';
+import { AuthService } from '../service/auth.service';
 
 @Component({
   selector: 'app-admin-project-page',
@@ -8,18 +9,28 @@ import { Router } from '@angular/router';
   styleUrls: ['./admin-project-page.component.css'],
 })
 export class AdminProjectPageComponent implements OnInit {
-  constructor(private projectService: ProjectService, private router: Router) {}
+  constructor(private projectService: ProjectService, private router: Router,private authService:AuthService) {}
   projects: any[] = [];
+  public type:string="";
 
   ngOnInit(): void {
+    this.type=this.authService.getRole();
     this.loadAllUsers();
   }
 
   loadAllUsers() {
+    if(this.type=="SOFTWARE_ENGINEER"){
+      this.projectService.managerProjects().subscribe((projectResponse) => {
+        this.projects = projectResponse;
+        console.log(this.projects);
+      })
+    }
+    else{
     this.projectService.allUsers().subscribe((projectResponse) => {
       this.projects = projectResponse;
       console.log(this.projects);
     });
+    }
   }
 
   addEngineerToProject(project: any): void {
