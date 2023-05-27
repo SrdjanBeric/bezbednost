@@ -34,6 +34,7 @@ export class EditAdminProfileComponent implements OnInit {
   submitForm(form: NgForm) {
     if (form.valid) {
       this.userService.updateUser(this.admin).subscribe((response) => {
+        console.log(`nesto se desava`);
         console.log(response);
         this.editMode = false;
       });

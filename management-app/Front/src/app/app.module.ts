@@ -29,6 +29,7 @@ import { GuestGuard } from './service/guest.guard';
 import { FrontTokenExtractComponent } from './front-token-extract/front-token-extract.component';
 import { EditAdminProfileComponent } from './edit-admin-profile/edit-admin-profile.component';
 import { AuthInterceptor } from './service/interceptor';
+import { AdminRegAdminComponent } from './admin-reg-admin/admin-reg-admin.component';
 
 const appRoutes: Routes = [
   {
@@ -127,6 +128,7 @@ const appRoutes: Routes = [
     ManagerProjectsComponent,
     FrontTokenExtractComponent,
     EditAdminProfileComponent,
+    AdminRegAdminComponent,
   ],
   imports: [
     BrowserModule,
