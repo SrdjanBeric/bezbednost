@@ -52,10 +52,11 @@ const appRoutes: Routes = [
   { path: 'user-cv', component: UserCVComponent },
   { path: 'manager-profile/:id', component: ManagerProfileComponent },
   { path: 'edit-manager-profile/:id', component: EditManagerProfileComponent },
-  { path: 'user-projects',
-   component: ManagerProjectsComponent,
+  {
+    path: 'user-projects',
+    component: ManagerProjectsComponent,
     canActivate: [AuthGuard],
-    data: { allowedRoles: ['SOFTWARE_ENGINEER'] }
+    data: { allowedRoles: ['SOFTWARE_ENGINEER'] },
   },
   {
     path: 'edit-admin-profile',
@@ -85,7 +86,7 @@ const appRoutes: Routes = [
     path: 'admin-project',
     component: AdminProjectPageComponent,
     canActivate: [AuthGuard],
-    data: { allowedRoles: ['ADMIN','PROJECT_MANAGER'] },
+    data: { allowedRoles: ['ADMIN', 'PROJECT_MANAGER'] },
   },
   {
     path: 'admin-users',
@@ -94,10 +95,16 @@ const appRoutes: Routes = [
     data: { allowedRoles: ['ADMIN'] },
   },
   {
+    path: 'admin-reg-admin',
+    component: AdminRegAdminComponent,
+    canActivate: [AuthGuard],
+    data: { allowedRoles: ['ADMIN'] },
+  },
+  {
     path: 'add-engineer',
     component: AddEngineerPageComponent,
     canActivate: [AuthGuard],
-    data: { allowedRoles: ['ADMIN','PROJECT_MANAGER'] },
+    data: { allowedRoles: ['ADMIN', 'PROJECT_MANAGER'] },
   },
   {
     path: 'login/:token',

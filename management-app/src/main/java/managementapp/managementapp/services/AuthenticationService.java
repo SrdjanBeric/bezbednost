@@ -77,6 +77,9 @@ public class AuthenticationService {
                 case "HUMAN_RESOURCES_MANAGER":
                     userAppService.save(new HumanResourcesManager(userToRegister));
                     break;
+                case "ADMIN":
+                    userAppService.save(new Admin(userToRegister));
+                    break;
                 default:
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                             .body("Invalid role name.");
