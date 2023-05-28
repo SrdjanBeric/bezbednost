@@ -30,6 +30,7 @@ import { FrontTokenExtractComponent } from './front-token-extract/front-token-ex
 import { EditAdminProfileComponent } from './edit-admin-profile/edit-admin-profile.component';
 import { AuthInterceptor } from './service/interceptor';
 import { AdminRegAdminComponent } from './admin-reg-admin/admin-reg-admin.component';
+import { CreateProjectAdminComponent } from './create-project-admin/create-project-admin.component';
 
 const appRoutes: Routes = [
   {
@@ -101,6 +102,12 @@ const appRoutes: Routes = [
     data: { allowedRoles: ['ADMIN'] },
   },
   {
+    path: 'create-project-admin',
+    component: CreateProjectAdminComponent,
+    canActivate: [AuthGuard],
+    data: { allowedRoles: ['ADMIN'] },
+  },
+  {
     path: 'add-engineer',
     component: AddEngineerPageComponent,
     canActivate: [AuthGuard],
@@ -136,6 +143,7 @@ const appRoutes: Routes = [
     FrontTokenExtractComponent,
     EditAdminProfileComponent,
     AdminRegAdminComponent,
+    CreateProjectAdminComponent,
   ],
   imports: [
     BrowserModule,

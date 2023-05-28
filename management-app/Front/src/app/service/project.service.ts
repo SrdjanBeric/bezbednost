@@ -54,6 +54,7 @@ export class ProjectService {
       { headers }
     );
   }
+
   getProjects(): Observable<any[]> {
     return this.http.get<any[]>('https://localhost:8081/project/all');
   }
@@ -62,6 +63,16 @@ export class ProjectService {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.get<any[]>(
       'https://localhost:8081/softwareEngineer/allEngineerProject',
+      { headers }
+    );
+  }
+
+  addProject(projectDto: any) {
+    const token = localStorage.getItem('access_token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.post<any[]>(
+      `https://localhost:8081/project/addProject`,
+      projectDto,
       { headers }
     );
   }
