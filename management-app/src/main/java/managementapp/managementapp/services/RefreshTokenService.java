@@ -15,7 +15,8 @@ import java.util.UUID;
 public class RefreshTokenService {
     @Autowired
     private RefreshTokenRepository refreshTokenRepository;
-
+    @Autowired
+    LogService logService;
     public UUID generateRefreshToken(UserApp userApp){
         UUID token = UUID.randomUUID();
         RefreshToken refreshToken = RefreshToken.builder()
@@ -26,14 +27,17 @@ public class RefreshTokenService {
                 .dateTimeEnd(LocalDateTime.now().plusDays(1))
                 .build();
         refreshTokenRepository.save(refreshToken);
+        logService.INFO("Generated refresh token for user: " + userApp.getUsername());
         return token;
     }
 
     public UserApp validateTokenAndGetUser(UUID token){
         RefreshToken refreshToken = refreshTokenRepository.findByHmacValue(HashingAlogorithm.calculateHmac(token.toString()));
         if(refreshToken == null || refreshToken.isExpired()){
+            logService.ERROR("Invalid or expired refresh token.");
             return null;
         }
+        logService.INFO("Validated refresh token for user: " + refreshToken.getUserApp().getUsername());
         return refreshToken.getUserApp();
     }
 }

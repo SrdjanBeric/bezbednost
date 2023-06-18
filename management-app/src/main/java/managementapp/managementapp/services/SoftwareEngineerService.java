@@ -28,14 +28,16 @@ public class SoftwareEngineerService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
+    @Autowired
+    LogService logService;
 
     //kreiranje liste vestina
     public void skillsCreate(List<String> newSkills) {
         UserApp loggedInUser = userAppRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-            SoftwareEngineer softwareEngineer = (SoftwareEngineer) loggedInUser;
-            softwareEngineer.setSkills(newSkills);
-            softwareEngineerRepository.save(softwareEngineer);
+        SoftwareEngineer softwareEngineer = (SoftwareEngineer) loggedInUser;
+        softwareEngineer.setSkills(newSkills);
+        softwareEngineerRepository.save(softwareEngineer);
+        logService.INFO("Created skills list for software engineer: " + loggedInUser.getUsername());
     }
 
     //update list of skils
@@ -44,6 +46,7 @@ public class SoftwareEngineerService {
         SoftwareEngineer softwareEngineer = (SoftwareEngineer) loggedInUser;
         softwareEngineer.setSkills(updateSkills);
         softwareEngineerRepository.save(softwareEngineer);
+        logService.INFO("Updated skills list for software engineer: " + loggedInUser.getUsername());
     }
 
     //citanje celokupne liste
@@ -51,6 +54,7 @@ public class SoftwareEngineerService {
         UserApp loggedInUser = userAppRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         SoftwareEngineer softwareEngineer = (SoftwareEngineer) loggedInUser;
         ArrayList<String>skills = new ArrayList<>(softwareEngineer.getSkills());
+        logService.INFO("Retrieved skills list for software engineer: " + loggedInUser.getUsername());
         return  skills;
     }
 
@@ -64,6 +68,7 @@ public class SoftwareEngineerService {
         loggedInUser.setActive(userAppDto.getActive());
 
         userAppRepository.save(loggedInUser);
+        logService.INFO("Updated software engineer: " + loggedInUser.getUsername());
     }
 
 

@@ -31,6 +31,7 @@ import { EditAdminProfileComponent } from './edit-admin-profile/edit-admin-profi
 import { AuthInterceptor } from './service/interceptor';
 import { AdminRegAdminComponent } from './admin-reg-admin/admin-reg-admin.component';
 import { CreateProjectAdminComponent } from './create-project-admin/create-project-admin.component';
+import { LogsPreviewComponent } from './logs-preview/logs-preview.component';
 
 const appRoutes: Routes = [
   {
@@ -108,6 +109,12 @@ const appRoutes: Routes = [
     data: { allowedRoles: ['ADMIN'] },
   },
   {
+    path: 'critical-logs',
+    component: LogsPreviewComponent,
+    canActivate: [AuthGuard],
+    data: { allowedRoles: ['ADMIN'] },
+  },
+  {
     path: 'add-engineer',
     component: AddEngineerPageComponent,
     canActivate: [AuthGuard],
@@ -144,6 +151,7 @@ const appRoutes: Routes = [
     EditAdminProfileComponent,
     AdminRegAdminComponent,
     CreateProjectAdminComponent,
+    LogsPreviewComponent,
   ],
   imports: [
     BrowserModule,

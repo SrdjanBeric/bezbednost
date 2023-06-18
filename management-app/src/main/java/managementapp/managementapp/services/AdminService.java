@@ -35,12 +35,15 @@ public class AdminService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
+    @Autowired
+    private LogService logService;
     public ResponseEntity<?> getUsersToActivate(){
         try{
             List<UserApp> usersToActivate = userAppRepository.findUserAppsByActive(false);
+            logService.INFO("Retrieved users to activate");
             return new ResponseEntity<>(usersToActivate, HttpStatus.OK);
         }catch (Exception e){
+            logService.ERROR("An error occurred while getting all users to activate.");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("An error occurred while getting all users to activate.");
         }
@@ -50,16 +53,20 @@ public class AdminService {
         try{
             UserApp userApp = userAppRepository.findById(userId).orElse(null);
             if(userApp == null){
+                logService.ERROR("User with id: " + userId + " does not exist.");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("User with id: " + userId + " does not exist.");
             }
             if(userApp.getActive()){
+                logService.ERROR("User with id: " + userId + " is already active.");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("User with id: " + userId + " is already active.");
             }
             String activationLink = authenticationService.sendVerificationEmail(userApp);
+            logService.INFO("Approved registration request for user with id: " + userId);
             return new ResponseEntity<>(activationLink, HttpStatus.OK);
         }catch (Exception e){
+            logService.ERROR("An error occurred while activating user with id: " + userId);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("An error occurred while activating user with id: " + userId);
         }
@@ -70,8 +77,10 @@ public class AdminService {
     public ResponseEntity<?> getActiveUsers(){
         try{
             List<UserApp> usersToActivate = userAppRepository.findUserAppsByActive(true);
+            logService.INFO("Retrieved active users");
             return new ResponseEntity<>(usersToActivate, HttpStatus.OK);
         }catch (Exception e){
+            logService.ERROR("An error occurred while getting active users.");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("An error occurred while getting all users to activate.");
         }
@@ -92,6 +101,7 @@ public class AdminService {
                     .active(true)
                     .build();
             userAppService.save(new Admin(userToRegister));
+            logService.INFO("Admin created: " + userToRegister.getUsername());
             ResponseEntity.status(HttpStatus.CREATED);
         } catch (Exception e) {
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

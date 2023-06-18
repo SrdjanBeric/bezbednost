@@ -16,9 +16,11 @@ import java.util.UUID;
 @Service
 public class ActivationTokenService {
     @Autowired
-    private ActivationTokenRepository activationTokenRepository;
+    ActivationTokenRepository activationTokenRepository;
     @Autowired
-    private UserAppRepository userAppRepository;
+    UserAppRepository userAppRepository;
+    @Autowired
+    LogService LogService;
 
     public UUID generateActivationToken(UserApp userToRegister){
         UUID token = UUID.randomUUID();
@@ -31,6 +33,7 @@ public class ActivationTokenService {
                 .activated(false)
                 .build();
         activationTokenRepository.save(activationToken);
+        LogService.INFO("Generated activation token for user: " + userToRegister.getUsername());
         return token;
     }
 
@@ -38,19 +41,23 @@ public class ActivationTokenService {
     public ResponseEntity<?> activate(UUID token){
         ActivationToken activationToken = activationTokenRepository.findByHmacValue(HashingAlogorithm.calculateHmac(token.toString()));
         if(activationToken == null){
+            LogService.ERROR("Invalid activation token");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Invalid token");
         }
         if(activationToken.getActivated()){
+            LogService.INFO("Account is already active.");
             return ResponseEntity.status(HttpStatus.OK)
                     .body("Account is already active.");
         }
         if(activationToken.isExpired()){
+            LogService.WARN("Token has expired");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Token has expired");
         }
         UserApp userApp = userAppRepository.findById(activationToken.getUserApp().getId()).orElse(null);
         if(userApp == null){
+            LogService.ERROR("User does not exist.");
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body("User does not exist.");
         }
@@ -58,6 +65,7 @@ public class ActivationTokenService {
         userAppRepository.save(userApp);
         activationToken.setActivated(true);
         activationTokenRepository.save(activationToken);
+        LogService.INFO("Activated account for user: " + userApp.getUsername());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

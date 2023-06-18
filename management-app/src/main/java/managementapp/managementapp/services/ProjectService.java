@@ -28,7 +28,8 @@ public class ProjectService {
 
     @Autowired
     private ProjectManagerRepository projectManagerRepository;
-
+    @Autowired
+    LogService logService;
     public ResponseEntity<?> getAllProjects(){
         UserApp loggedInUser = userAppRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         List<Project> projects = new ArrayList<>();
@@ -39,6 +40,7 @@ public class ProjectService {
             default -> {
             }
         }
+        logService.INFO("Retrieved all projects.");
         return new ResponseEntity<>(projects, HttpStatus.OK);
     }
 
@@ -46,15 +48,18 @@ public class ProjectService {
         UserApp loggedInUser = userAppRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         SoftwareEngineer engineerToAdd = softwareEngineerRepository.findById(addEngineerToProjectRequestDto.getSoftwareEngineerId()).orElse(null);
         if(engineerToAdd == null){
+            logService.ERROR("Software engineer with id " + addEngineerToProjectRequestDto.getSoftwareEngineerId() + " does not exist");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Software engineer with id " + addEngineerToProjectRequestDto.getSoftwareEngineerId() + " does not exist");
         }
         Project project = projectRepository.findById(addEngineerToProjectRequestDto.getProjectId()).orElse(null);
         if(project == null){
+            logService.ERROR("Project with id " + addEngineerToProjectRequestDto.getProjectId() + " does not exist");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Project with id " + addEngineerToProjectRequestDto.getProjectId() + " does not exist");
         }
         if(!isManagerOnProject(project, loggedInUser)){
+            logService.ERROR("You are not allowed to add engineers on project with id " + addEngineerToProjectRequestDto.getProjectId());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("You are not allowed to add engineers on project with id " + addEngineerToProjectRequestDto.getProjectId());
         }
@@ -66,6 +71,7 @@ public class ProjectService {
                 .workDescription(addEngineerToProjectRequestDto.getWorkDescription())
                 .build();
         softwareEngineerProjectRepository.save(softwareEngineerProject);
+        logService.INFO("Engineer added to project. Engineer ID: " + engineerToAdd.getId() + ", Project ID: " + project.getId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -74,27 +80,33 @@ public class ProjectService {
             UserApp loggedInUser = userAppRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
             SoftwareEngineer engineerToRemove = softwareEngineerRepository.findById(softwareEngineerId).orElse(null);
             if(engineerToRemove == null){
+                logService.ERROR("Software engineer with id " + softwareEngineerId + " does not exist");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("Software engineer with id " + softwareEngineerId + " does not exist");
             }
             Project project = projectRepository.findById(projectId).orElse(null);
             if(project == null){
+                logService.ERROR("Project with id " + projectId + " does not exist");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("Project with id " + projectId + " does not exist");
             }
             if(!isManagerOnProject(project, loggedInUser)){
+                logService.ERROR("You are not allowed to remove engineers on project with id " + projectId);
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("You are not allowed to remove engineers on project with id " + projectId);
             }
             SoftwareEngineerProject softwareEngineerProject = softwareEngineerProjectRepository.findByProjectIdAndSoftwareEngineerId(projectId, softwareEngineerId);
             if(softwareEngineerProject == null){
+                logService.ERROR("Engineer does not work on this project.");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("Engineer does not work on this project.");
             }
             softwareEngineerProject.setActive(false);
             softwareEngineerProjectRepository.save(softwareEngineerProject);
+            logService.INFO("Engineer removed from project. Engineer ID: " + engineerToRemove.getId() + ", Project ID: " + project.getId());
             return new ResponseEntity<>(HttpStatus.OK);
         }catch (Exception e){
+            logService.ERROR("An error occurred while removing engineer from project.");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("An error occurred while removing engineer from project.");
         }
@@ -115,10 +127,12 @@ public class ProjectService {
             UserApp loggedInUser = userAppRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
             Project project = projectRepository.findById(projectId).orElse(null);
             if(project == null){
+                logService.ERROR("Project does not exist.");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("Project does not exist.");
             }
             if(loggedInUser.getRole().getName().equals("PROJECT_MANAGER") && project.getProjectManager().getId() != loggedInUser.getId()){
+                logService.ERROR("You do not have permissions to access this project.");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("You do not have permissions to access this project.");
             }
@@ -139,6 +153,7 @@ public class ProjectService {
                     availableUsers.add(userIterator);
                 }
             }
+            logService.INFO("Retrieved available engineers for project. Project ID: " + project.getId());
             return new ResponseEntity<>(availableUsers, HttpStatus.OK);
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -151,7 +166,8 @@ public class ProjectService {
         UserApp loggedInUser = userAppRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         Optional<Project>projectOptional = projectRepository.findByName(projectDTO.getName());
         if(projectOptional.isPresent()){
-             ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Can not create this project, because project with " + projectDTO.getName() + "exist.");
+            logService.ERROR("Can not create this project, because project with " + projectDTO.getName() + "exist.");
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Can not create this project, because project with " + projectDTO.getName() + "exist.");
         }else{
             Project project =new Project();
             project.setName(projectDTO.getName());
@@ -161,10 +177,12 @@ public class ProjectService {
             if (projectManagerOptional.isPresent()) {
                 project.setProjectManager(projectManagerOptional.get());
             } else {
+                logService.ERROR("Cannot find the specified project manager.");
                 ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Cannot find the specified project manager.");
             }
 
             projectRepository.save(project);
+            logService.INFO("Created new project. Project Name: " + project.getName());
             ResponseEntity.status(HttpStatus.CREATED);
 
         }

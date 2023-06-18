@@ -30,7 +30,8 @@ public class SoftwareEngineerProjectService {
 
     @Autowired
     private SoftwareEngineerRepository softwareEngineerRepository;
-
+    @Autowired
+    LogService logService;
     public List<Project> getAllProjects() {
         UserApp loggedInUser = userAppRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         List<Project> projects = new ArrayList<>();
@@ -40,7 +41,7 @@ public class SoftwareEngineerProjectService {
         } else {
             projects = projectRepository.findAll();
         }
-
+        logService.INFO("Retrieved all projects for user: " + loggedInUser.getUsername());
         return projects;
     }
 
@@ -53,7 +54,7 @@ public class SoftwareEngineerProjectService {
             SoftwareEngineer engineer = projectEngineer.get();
             projectList = softwareEngineerProjectRepository.findAllByProjectEngineer(engineer);
         }
-
+        logService.INFO("Retrieved all projects for engineer: " + loggedInUser.getUsername());
         return projectList;
     }
 

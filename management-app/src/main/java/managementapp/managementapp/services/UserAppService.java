@@ -26,22 +26,27 @@ public class UserAppService implements UserDetailsService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
+    @Autowired
+    LogService logService;
     public ResponseEntity<?> getAllUsers(){
         List<UserApp> allUsers = userAppRepository.findAll();
+        logService.INFO("Retrieved all users.");
         return new ResponseEntity<>(allUsers, HttpStatus.OK);
     }
 
     public ResponseEntity<?> getById(Long userId){
         UserApp userApp = userAppRepository.findById(userId).orElse(null);
         if(userApp == null){
+            logService.ERROR("User with id '" + userId + "' does not exist.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("User with id '" + userId + "' does not exist.");
         }
         if(!userApp.getActive()){
+            logService.ERROR("User with id '" + userId + "' is not active.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("User with id '" + userId + "' is not active.");
         }
+        logService.INFO("Retrieved user with id: " + userId);
         return new ResponseEntity<>(userApp, HttpStatus.OK);
     }
 
@@ -58,6 +63,7 @@ public class UserAppService implements UserDetailsService {
 //            loggedInUser.setRole(role);
             loggedInUser.setActive(updateduserApp.getActive());
             userAppRepository.save(loggedInUser);
+        logService.INFO("Updated user: " + loggedInUser.getUsername());
     }
 
     public UserApp save(UserApp userApp){
@@ -70,6 +76,7 @@ public class UserAppService implements UserDetailsService {
 
     public ResponseEntity<?>  getMyInfo(){
         UserApp loggedInUser = userAppRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        logService.INFO("Retrieved information for logged in user: " + loggedInUser.getUsername());
         return ResponseEntity.status(HttpStatus.OK).body(loggedInUser);
     }
 

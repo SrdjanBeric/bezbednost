@@ -27,3 +27,7 @@ INSERT INTO project(id, name, start_date, end_date, project_manager_id) VALUES (
 
 --Software engineer projects
 INSERT INTO software_engineer_project(id, software_engineer_id, project_id, work_description, start_date, end_date, active) VALUES (nextval('software_engineer_project_seq_gen'), 3, 1, 'Development', '01-01-2022', '01-01-2023', true);
+
+--Logs
+INSERT INTO Log(id, log_level, created_date, message) VALUES (nextval('log_seq_gen'), 'FATAL', '2023-06-18 12:34:56', 'Application failed to start');
+INSERT INTO Log(id, log_level, created_date, message, user_app_id) VALUES (nextval('log_seq_gen'), 'ERROR', '2023-06-18 15:34:56', 'Can not create this project, because project with 2 exist.', 3);

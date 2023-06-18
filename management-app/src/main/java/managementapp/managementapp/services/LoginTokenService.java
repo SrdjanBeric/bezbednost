@@ -18,7 +18,8 @@ import java.util.UUID;
 public class LoginTokenService {
     @Autowired
     private LoginTokenRepository loginTokenRepository;
-
+    @Autowired
+    LogService logService;
     public UUID generateLoginToken(UserApp loginUser){
         UUID token = UUID.randomUUID();
         LoginToken loginToken = LoginToken.builder()
@@ -30,16 +31,19 @@ public class LoginTokenService {
                 .activated(false)
                 .build();
         loginTokenRepository.save(loginToken);
+        logService.INFO("Login token generated for user: " + loginUser.getUsername());
         return token;
     }
 
     public UserApp validateTokenAndGetUser(UUID token){
         LoginToken loginToken = loginTokenRepository.findByHmacValue(HashingAlogorithm.calculateHmac(token.toString()));
         if(loginToken == null || loginToken.getActivated() || loginToken.isExpired()){
+            logService.ERROR("Invalid or expired login token.");
             return null;
         }
         loginToken.setActivated(true);
         loginTokenRepository.save(loginToken);
+        logService.INFO("Login token validated for user: " + loginToken.getUserApp().getUsername());
         return loginToken.getUserApp();
     }
 

@@ -24,4 +24,22 @@ export class AdminService {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.patch<any>(url, null, { headers });
   }
+
+  getCriticalLogs(): Observable<any[any]> {
+    const url = `https://localhost:8081/log/critical`;
+    const token = localStorage.getItem('access_token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<any[]>(url, {
+      headers,
+    });
+  }
+
+  getUserLogs(userId: number): Observable<any[any]> {
+    const url = `https://localhost:8081/log/user/${userId}`;
+    const token = localStorage.getItem('access_token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<any[]>(url, {
+      headers,
+    });
+  }
 }

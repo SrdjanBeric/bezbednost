@@ -46,14 +46,17 @@ public class AuthenticationService {
     private UserDetailsService userDetailsService;
     @Autowired
     private RefreshTokenService refreshTokenService;
-
+    @Autowired
+    LogService logService;
     public ResponseEntity<?> registerUser(RegistrationRequestDto registrationRequest){
         try{
             if(userAppService.userExistsByUsernameOrEmail(registrationRequest.getUsername(), registrationRequest.getEmail())){
+                logService.ERROR("A user with that username or email already exists.");
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("A user with that username or email already exists.");
             }
             Role role = roleRepository.findByName(registrationRequest.getRoleName());
             if(role == null){
+                logService.ERROR("Invalid role name.");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("Invalid role name.");
             }
@@ -84,9 +87,11 @@ public class AuthenticationService {
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                             .body("Invalid role name.");
             }
+            logService.INFO("User registered: " + userToRegister.getUsername());
             return new ResponseEntity<>(HttpStatus.CREATED);
         }
         catch (Exception e){
+            logService.ERROR("An error occurred during registration.");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("An error occurred during registration.");
         }
