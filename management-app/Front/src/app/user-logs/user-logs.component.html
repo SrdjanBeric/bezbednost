@@ -1,0 +1,21 @@
+<h2>Log List</h2>
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Log Level</th>
+      <th>Timestamp</th>
+      <th>Message</th>
+      <th>User</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let log of logs" [ngClass]="getLogLevelClass(log.logLevel)">
+      <td>{{ log.id }}</td>
+      <td>{{ log.logLevel }}</td>
+      <td>{{ formatDate(log.createdDate) }}</td>
+      <td>{{ log.message }}</td>
+      <td>{{ log?.userApp?.username }} ({{ log?.userApp?.email }})</td>
+    </tr>
+  </tbody>
+</table>
